@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "labels": "tsx scripts/make-labels.ts",
+    "verify": "node --env-file=.env.local --import tsx scripts/verify-labels.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@ai-sdk/groq": "^4.0.54",

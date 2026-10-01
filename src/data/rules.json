@@ -1,0 +1,179 @@
+{
+  "$comment": "Jaanch rule set for the Legal Metrology (Packaged Commodities) Rules, 2011 (LMPC). Every rule carries verified:false until a human checks it against the official text. Source PDF: Department of Consumer Affairs consolidated book with amendments.",
+  "sourceDocument": "https://consumeraffairs.gov.in/public/upload/admin/cmsfiles/whatsnews/Book_on_Legal_Metrology_Packaged_Commodities_Rules,2011_with_all_amendments_whatsnews.pdf",
+  "rules": [
+    {
+      "id": "LMPC-6-1-a-NAME",
+      "title": "Name of manufacturer / packer / importer",
+      "description": "Every package must bear the name of the manufacturer, or where the manufacturer is not the packer, of the manufacturer and packer; for imported packages, the name of the importer. For food articles the FSS Act, 2006 labelling rules apply in place of this clause (Explanation III), but the same declaration is still expected on the pack.",
+      "field": "responsibleParty.name",
+      "check": "present",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a) (proviso for tobacco inserted by GSR 385(E), 14.05.2015)" }
+      ],
+      "severity": "high",
+      "source": "LMPC Rules 2011, Rule 6(1)(a) read with Rule 10(1)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-6-1-a-ADDRESS",
+      "title": "Complete address of manufacturer / packer / importer",
+      "description": "Rule 10(1) requires the name and complete address of the manufacturer / packer / importer to appear conspicuously on the package. Jaanch treats an address with a PIN code or at least two address parts as complete; anything shorter is flagged for review.",
+      "field": "responsibleParty.address",
+      "check": "custom",
+      "customCheck": "addressComplete",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "high",
+      "source": "LMPC Rules 2011, Rule 6(1)(a) and Rule 10(1)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-6-1-aa-ORIGIN",
+      "title": "Country of origin (imported products)",
+      "description": "For imported products, the name of the country of origin or manufacture or assembly must be mentioned on the package. Inserted by GSR 629(E) dated 23.06.2017, in force from 01.01.2018.",
+      "field": "countryOfOrigin",
+      "check": "present",
+      "appliesTo": "imported",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "high",
+      "source": "LMPC Rules 2011, Rule 6(1)(aa)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-6-1-b-GENERIC-NAME",
+      "title": "Common or generic name of the commodity",
+      "description": "The common or generic name of the commodity contained in the package must be mentioned (and for multi-product packs, the name and number or quantity of each product). A brand name alone is not enough.",
+      "field": "commodityName",
+      "check": "present",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "medium",
+      "source": "LMPC Rules 2011, Rule 6(1)(b)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-6-1-c-NET-QTY",
+      "title": "Net quantity declared",
+      "description": "The net quantity, in terms of the standard unit of weight or measure, or the number of the commodity where sold by number, must be mentioned.",
+      "field": "netQuantity.raw",
+      "check": "present",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "high",
+      "source": "LMPC Rules 2011, Rule 6(1)(c)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-13-STANDARD-UNITS",
+      "title": "Net quantity in standard units",
+      "description": "Units of weight, measure or number must follow Rule 13: gram (g) below 1 kg and kilogram (kg) at or above 1 kg; millilitre (ml) below 1 litre and litre (l / L) at or above; metre / centimetre for length; number for count. Imperial units such as oz, lb or fl oz are not standard units. Informal spellings such as 'gm', 'gms', 'ltr' or 'pcs' are flagged for review rather than failed.",
+      "field": "netQuantity.unit",
+      "check": "custom",
+      "customCheck": "standardUnit",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "high",
+      "source": "LMPC Rules 2011, Rule 6(1)(c) read with Rule 13(2) and 13(3)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-6-1-d-DATE",
+      "title": "Month and year of manufacture / pre-packing / import",
+      "description": "The month and year in which the commodity is manufactured, pre-packed or imported must be mentioned. (GSR 779(E), 02.11.2021 later narrowed the wording; for food, cosmetics and seeds the respective sector laws apply.) Jaanch accepts month names or MM/YYYY style declarations and flags unclear formats for review.",
+      "field": "dateOfManufacture",
+      "check": "custom",
+      "customCheck": "monthYear",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "high",
+      "source": "LMPC Rules 2011, Rule 6(1)(d)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-6-1-e-MRP",
+      "title": "Retail sale price (MRP) declared",
+      "description": "The retail sale price of the package must be declared.",
+      "field": "mrp.raw",
+      "check": "present",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "high",
+      "source": "LMPC Rules 2011, Rule 6(1)(e) read with Rule 2(m)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-6-1-e-MRP-TAXES",
+      "title": "MRP stated as 'inclusive of all taxes'",
+      "description": "The retail sale price must clearly indicate that it is the maximum retail price inclusive of all taxes, in Indian currency. Illustrations in the rule accept 'Maximum/Max. retail price Rs. xx.xx (inclusive of all taxes)' and 'MRP Rs. xx.xx incl. of all taxes'. Jaanch also accepts the Hindi phrase 'सभी करों सहित'.",
+      "field": "mrp.inclusiveOfAllTaxes",
+      "check": "custom",
+      "customCheck": "mrpInclusive",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "high",
+      "source": "LMPC Rules 2011, Rule 6(1)(e) (as substituted by GSR 629(E), 23.06.2017) and Rule 2(m)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-6-2-CONSUMER-CARE",
+      "title": "Consumer care details",
+      "description": "Every package must bear the name, address, telephone number and e-mail address of the person or office that can be contacted for consumer complaints (substituted by GSR 385(E), 14.05.2015). Jaanch passes when both a phone number and an e-mail are present, flags for review when only one is present, and marks missing when neither is found.",
+      "field": "consumerCare",
+      "check": "custom",
+      "customCheck": "consumerCare",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "high",
+      "source": "LMPC Rules 2011, Rule 6(2)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-9-4-LANGUAGE",
+      "title": "Declarations in Hindi (Devanagari) or English",
+      "description": "The particulars of the declarations must be either in Hindi in Devanagari script or in English; other languages may be used in addition.",
+      "field": "languages",
+      "check": "custom",
+      "customCheck": "language",
+      "appliesTo": "all",
+      "exemptions": [
+        { "type": "netQuantityAtMost", "value": 10, "units": ["g", "ml"], "unless": ["tobacco"], "source": "LMPC Rules 2011, Rule 26(a)" }
+      ],
+      "severity": "medium",
+      "source": "LMPC Rules 2011, Rule 9(4)",
+      "verified": false
+    },
+    {
+      "id": "LMPC-7-2-TEXT-SIZE",
+      "title": "Minimum height of letters and numerals",
+      "description": "Rule 7(2) Table I (as substituted by GSR 629(E), 2017) sets minimum heights for numerals and letters by principal display panel area: 1.0 mm for A < 50 cm², 1.5 mm for 50–100 cm², 2.5 mm for 100–500 cm², 4.0 mm for 500–2500 cm², 6.0 mm above; larger when blown, formed or moulded. Rule 7(3): width at least one third of height. A photograph cannot establish physical size, so Jaanch only ever reports NEEDS_REVIEW (never FAIL) for this rule.",
+      "field": "textSize",
+      "check": "custom",
+      "customCheck": "textSize",
+      "appliesTo": "all",
+      "exemptions": [],
+      "severity": "low",
+      "source": "LMPC Rules 2011, Rule 7(2) Table I and Rule 7(3)",
+      "verified": false
+    }
+  ]
+}

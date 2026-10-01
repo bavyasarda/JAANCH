@@ -1,0 +1,62 @@
+[
+  {
+    "index": 1,
+    "file": "01-compliant-en.png",
+    "brand": "SUNRISE VALLEY",
+    "product": "Classic Thick Poha"
+  },
+  {
+    "index": 2,
+    "file": "02-missing-mrp.png",
+    "brand": "NILGIRI BREEZE",
+    "product": "Premium CTC Leaf Tea"
+  },
+  {
+    "index": 3,
+    "file": "03-mrp-no-taxes.png",
+    "brand": "DAKSHIN MASALA CO.",
+    "product": "Udupi Sambar Powder"
+  },
+  {
+    "index": 4,
+    "file": "04-missing-care.png",
+    "brand": "HIMA HONEY",
+    "product": "Multiflora Forest Honey"
+  },
+  {
+    "index": 5,
+    "file": "05-nonstandard-units.png",
+    "brand": "MEGHA BAKES",
+    "product": "Danish Butter Cookies"
+  },
+  {
+    "index": 6,
+    "file": "06-missing-address.png",
+    "brand": "PURE HARVEST",
+    "product": "Roasted Salted Peanuts"
+  },
+  {
+    "index": 7,
+    "file": "07-missing-date.png",
+    "brand": "RAJDHANI GRAINS",
+    "product": "Aged Basmati Rice"
+  },
+  {
+    "index": 8,
+    "file": "08-import-no-origin.png",
+    "brand": "COSTA VERDE",
+    "product": "Extra Virgin Olive Oil"
+  },
+  {
+    "index": 9,
+    "file": "09-tiny-text.png",
+    "brand": "DEVI DAILY",
+    "product": "Unpolished Toor Dal"
+  },
+  {
+    "index": 10,
+    "file": "10-compliant-hi.png",
+    "brand": "अन्नपूर्णा",
+    "product": "चना दाल"
+  }
+]
