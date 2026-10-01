@@ -46,6 +46,49 @@ export function helperModel(): LanguageModel {
   return p()(MODEL_IDS.helper) as LanguageModel;
 }
 
+/* ---------- Optional secondary provider, used only when the primary hits a quota / outage ---------- */
+let fallbackCached: ReturnType<typeof createOpenAICompatible> | null = null;
+export const FALLBACK = {
+  enabled: provider === "groq" && !!process.env.FALLBACK_API_KEY,
+  name: process.env.FALLBACK_NAME ?? "openrouter",
+  vision: process.env.FALLBACK_VISION_MODEL ?? "qwen/qwen2.5-vl-72b-instruct",
+  text: process.env.FALLBACK_TEXT_MODEL ?? "meta-llama/llama-3.3-70b-instruct",
+};
+function fallbackProvider() {
+  return (fallbackCached ??= createOpenAICompatible({
+    name: FALLBACK.name,
+    baseURL: process.env.FALLBACK_BASE_URL ?? "https://openrouter.ai/api/v1",
+    apiKey: process.env.FALLBACK_API_KEY,
+  }));
+}
+export function fallbackVisionModel(): LanguageModel | null {
+  return FALLBACK.enabled ? (fallbackProvider()(FALLBACK.vision) as LanguageModel) : null;
+}
+export function fallbackTextModel(): LanguageModel | null {
+  return FALLBACK.enabled ? (fallbackProvider()(FALLBACK.text) as LanguageModel) : null;
+}
+
+/** True for errors where retrying the same provider will not help soon (daily quota, auth, missing model). */
+export function isQuotaError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /tokens per day|TPD|requests per day|RPD|quota|insufficient_quota|invalid api key|does not exist|decommission/i.test(msg);
+}
+
+/**
+ * Run a model call; if the primary provider fails with a quota/outage error and a fallback model is
+ * configured, run it again on the fallback. Returns which provider answered.
+ */
+export async function withFallback<T>(primary: LanguageModel, fallback: LanguageModel | null, fn: (model: LanguageModel) => Promise<T>): Promise<{ result: T; provider: "primary" | "fallback" }> {
+  try {
+    return { result: await fn(primary), provider: "primary" };
+  } catch (e) {
+    if (!fallback) throw e;
+    const msg = e instanceof Error ? e.message : String(e);
+    if (!/429|rate limit|quota|5\d\d|overloaded|unavailable/i.test(msg)) throw e;
+    return { result: await fn(fallback), provider: "fallback" };
+  }
+}
+
 /** Groq-specific options that are harmless on other providers. */
 export const groqTextOptions = provider === "groq" ? { groq: { reasoningFormat: "hidden" as const, reasoningEffort: "low" as const, parallelToolCalls: false } } : undefined;
 export const groqVisionOptions = provider === "groq" ? { groq: { reasoningFormat: "hidden" as const, reasoningEffort: "none" as const } } : undefined;
@@ -63,7 +106,11 @@ export function extractJson(text: string): unknown {
 /** Friendly message for rate limits / model outages. */
 export function friendlyModelError(err: unknown): string {
   const msg = err instanceof Error ? err.message : String(err);
-  if (/429|rate limit|too many requests/i.test(msg)) return "The model is busy right now (rate limit). Please wait a few seconds and try again.";
+  if (/tokens per day|TPD|requests per day|RPD/i.test(msg)) {
+    const when = msg.match(/try again in ([^.]+)/i)?.[1];
+    return `The free daily quota for the model on Groq is used up${when ? ` (resets in ${when.trim()})` : ""}. Add a fallback provider key (FALLBACK_API_KEY) or upgrade the Groq tier, then try again.`;
+  }
+  if (/429|rate limit|too many requests/i.test(msg)) return "The model is busy right now (per-minute rate limit). Please wait about 30 seconds and try again.";
   if (/401|invalid api key|unauthor/i.test(msg)) return "The AI provider rejected the API key. Check GROQ_API_KEY in your environment.";
   if (/model.*(not found|does not exist|decommission)/i.test(msg)) return `The configured model is unavailable (${MODEL_IDS.vision} / ${MODEL_IDS.text}). Update VISION_MODEL / TEXT_MODEL.`;
   if (/timeout|timed out|ETIMEDOUT|ECONNRESET/i.test(msg)) return "The model took too long to respond. Please try again.";

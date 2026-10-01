@@ -1,6 +1,6 @@
 import { generateText, stepCountIs, tool } from "ai";
 import { z } from "zod";
-import { textModel, groqTextOptions, MODEL_IDS, friendlyModelError } from "@/lib/ai";
+import { textModel, fallbackTextModel, withFallback, groqTextOptions, MODEL_IDS, friendlyModelError, isQuotaError } from "@/lib/ai";
 import { extractLabel } from "@/lib/tools/extract-label";
 import { checkRules } from "@/lib/tools/check-rules";
 import { explainVerdict, verdictFacts } from "@/lib/tools/explain-verdict";
@@ -43,7 +43,16 @@ function makeActions(ctx: RunContext) {
     async extractLabel(why: string) {
       if (!ctx.input.imageBase64) return { error: "No image was uploaded." };
       if (ctx.state.label) return { note: "Label already extracted.", summary: labelSummary(ctx.state.label) };
-      const out = await ctx.record("extractLabel", why, () => extractLabel({ imageBase64: ctx.input.imageBase64!, mediaType: ctx.input.mediaType ?? "image/jpeg" }), (o) => labelSummary(o.declarations));
+      if (ctx.state.extractError) return { error: ctx.state.extractError, hint: "Do not retry; continue with other inputs or finish." };
+      let out;
+      try {
+        out = await ctx.record("extractLabel", why, () => extractLabel({ imageBase64: ctx.input.imageBase64!, mediaType: ctx.input.mediaType ?? "image/jpeg" }), (o) => labelSummary(o.declarations));
+      } catch (e) {
+        const friendly = friendlyModelError(e);
+        ctx.patch({ extractError: friendly });
+        return { error: friendly, hint: "Do not retry; continue with other inputs or finish." };
+      }
+      if (out.warnings.length) ctx.patch({ warnings: [...(ctx.state.warnings ?? []), ...out.warnings] });
       ctx.patch({ label: out.declarations });
       return { summary: labelSummary(out.declarations), warnings: out.warnings, productName: out.declarations.productName, isImported: out.declarations.isImported };
     },
@@ -186,7 +195,7 @@ Plan: 1) extractLabel if an image exists. 1b) scrapeListing if a product link ex
 
 /** Deterministic pipeline used when the LLM planner is unavailable (rate limit / outage) or skipped a required step. */
 async function runScripted(ctx: RunContext, a: Actions, note: string) {
-  if (ctx.input.imageBase64 && !ctx.state.label) await a.extractLabel(`${note}: read the label first.`);
+  if (ctx.input.imageBase64 && !ctx.state.label && !ctx.state.extractError) await a.extractLabel(`${note}: read the label first.`);
   if (ctx.input.url && !ctx.state.listing && !ctx.state.listingError) await a.scrapeListing(`${note}: fetch the product listing.`);
   if (ctx.input.listingText && !ctx.state.listing) await a.parseListingText(`${note}: structure the pasted listing text.`);
   if (ctx.state.label && !ctx.state.rules) await a.checkRules(`${note}: run the deterministic rule engine.`, "label");
@@ -217,17 +226,20 @@ export async function runJaanch(input: RunInput, emit: (ev: StreamEvent) => void
   try {
     const planStep = ctx.record("plan", "Decide which tools to call for these inputs.", async () => MODEL_IDS.text, (m) => `Planner model ${m} is choosing tools.`);
     await planStep;
-    const result = await generateText({
-      model: textModel(),
-      system: systemPrompt(input),
-      prompt: "Start the check now.",
-      tools,
-      stopWhen: stepCountIs(10),
-      maxRetries: 4,
-      temperature: 0,
-      maxOutputTokens: 600,
-      providerOptions: groqTextOptions,
-    });
+    const { result, provider } = await withFallback(textModel(), fallbackTextModel(), (model) =>
+      generateText({
+        model,
+        system: systemPrompt(input),
+        prompt: "Start the check now.",
+        tools,
+        stopWhen: stepCountIs(10),
+        maxRetries: 2,
+        temperature: 0,
+        maxOutputTokens: 600,
+        providerOptions: groqTextOptions,
+      }),
+    );
+    if (provider === "fallback") ctx.patch({ warnings: [...(ctx.state.warnings ?? []), "Groq planner was unavailable; used the fallback provider."] });
     summary = result.text.trim();
   } catch (e) {
     planner = "scripted";
@@ -247,9 +259,10 @@ export async function runJaanch(input: RunInput, emit: (ev: StreamEvent) => void
   }
 
   if (!ctx.state.rules) {
-    emit({ type: "error", message: ctx.input.imageBase64 ? "Could not read the label. Try a clearer, well-lit photo of the back of the pack." : ctx.state.listingError ?? "Could not get any declarations from the listing. Paste the listing text or upload a label photo." });
+    emit({ type: "error", message: ctx.state.extractError ?? (ctx.input.imageBase64 ? "Could not read the label. Try a clearer, well-lit photo of the back of the pack." : ctx.state.listingError ?? "Could not get any declarations from the listing. Paste the listing text or upload a label photo.") });
     return;
   }
+  void isQuotaError;
   if (!summary) summary = ctx.state.verdictText?.english ?? rulesSummary(ctx.state.rules);
   emit({ type: "final", summary, state: ctx.state, steps: ctx.steps, planner });
 }

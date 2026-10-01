@@ -1,5 +1,5 @@
 import { generateText } from "ai";
-import { visionModel, groqVisionOptions, extractJson, MODEL_IDS } from "@/lib/ai";
+import { visionModel, fallbackVisionModel, withFallback, groqVisionOptions, extractJson, MODEL_IDS, FALLBACK } from "@/lib/ai";
 import { DeclarationsSchema, EMPTY_DECLARATIONS, type Declarations } from "@/lib/types";
 
 export interface ExtractLabelInput {
@@ -45,12 +45,12 @@ If a company name and address appear without "manufactured by"/"packed by" wordi
 
 export async function extractLabel(input: ExtractLabelInput): Promise<ExtractLabelOutput> {
   const warnings: string[] = [];
-  const { text } = await generateText({
-    model: visionModel(),
+  const { result: { text }, provider } = await withFallback(visionModel(), fallbackVisionModel(), (model) => generateText({
+    model,
     system: SYSTEM,
     temperature: 0,
     maxOutputTokens: 2500,
-    maxRetries: 4, // Groq free tier: 8K tokens/min per model; exponential backoff covers the reset window
+    maxRetries: 2,
     providerOptions: groqVisionOptions,
     messages: [
       {
@@ -61,21 +61,23 @@ export async function extractLabel(input: ExtractLabelInput): Promise<ExtractLab
         ],
       },
     ],
-  });
+  }));
+  const modelUsed = provider === "fallback" ? `${FALLBACK.name}:${FALLBACK.vision}` : MODEL_IDS.vision;
+  if (provider === "fallback") warnings.push(`Groq was unavailable; used fallback vision model ${FALLBACK.vision}.`);
 
   let parsed: unknown;
   try {
     parsed = extractJson(text);
   } catch {
     warnings.push("Model did not return valid JSON; treating all declarations as missing.");
-    return { declarations: { ...EMPTY_DECLARATIONS, rawText: text.slice(0, 2000) }, model: MODEL_IDS.vision, warnings };
+    return { declarations: { ...EMPTY_DECLARATIONS, rawText: text.slice(0, 2000) }, model: modelUsed, warnings };
   }
 
   const result = DeclarationsSchema.safeParse(parsed);
   const declarations: Declarations = result.success ? result.data : { ...EMPTY_DECLARATIONS, ...(parsed as Partial<Declarations>) };
   if (!result.success) warnings.push("Some fields did not match the expected schema and were normalised.");
   applyTextSizeEstimate(declarations);
-  return { declarations, model: MODEL_IDS.vision, warnings };
+  return { declarations, model: modelUsed, warnings };
 }
 
 /**

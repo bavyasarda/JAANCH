@@ -47,6 +47,8 @@ export interface RunState {
   grievance?: GrievanceDraft;
   fixList?: FixList;
   reportReady?: boolean;
+  extractError?: string;
+  warnings?: string[];
   models?: { vision: string; text: string; helper: string };
 }
 

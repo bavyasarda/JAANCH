@@ -102,6 +102,7 @@ export function ResultsView({ state, language, summary, role, imageDataUrl }: { 
             <Badge variant="outline" className="bg-background/60">{rev.length} to review</Badge>
             <Badge variant="outline" className="bg-background/60">{pass.length} passed</Badge>
           </div>
+          {state.warnings && state.warnings.length > 0 && <p className="text-xs opacity-80">Note: {state.warnings.join(" ")}</p>}
           <p className="text-xs opacity-75">{DISCLAIMER}</p>
         </CardContent>
       </Card>
