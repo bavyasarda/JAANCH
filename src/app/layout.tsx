@@ -7,6 +7,16 @@ import { SiteFooter } from "@/components/site-footer";
 export const metadata: Metadata = {
   title: "Jaanch — Packet ki jaanch, aapki bhasha mein",
   manifest: "/manifest.webmanifest",
+  metadataBase: new URL("https://jaanch-delta.vercel.app"),
+  openGraph: {
+    title: "Jaanch — Packet ki jaanch, aapki bhasha mein",
+    description: "An open-source AI agent that checks packaged-product labels against India's Legal Metrology rules and explains the result in your language.",
+    url: "https://jaanch-delta.vercel.app",
+    siteName: "Jaanch",
+    images: [{ url: "/icon-512.png", width: 512, height: 512 }],
+    locale: "en_IN",
+    type: "website",
+  },
   icons: { icon: "/icon.svg", apple: "/icon-192.png" },
   appleWebApp: { capable: true, title: "Jaanch", statusBarStyle: "default" },
   description:

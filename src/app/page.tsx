@@ -14,6 +14,20 @@ export default function Home() {
           (Packaged Commodities) Rules, 2011, explains the result in your language, and drafts the next step for you.
         </p>
       </section>
+      <section className="mx-auto mb-6 flex w-full max-w-3xl flex-wrap justify-center gap-2 px-4 text-xs">
+        {[
+          ["🤖", "Real agent", "plans and calls tools, shows every step"],
+          ["⚖️", "Deterministic verdicts", "rule engine decides, never the LLM"],
+          ["🇮🇳", "6 Indian languages", "text + voice, vernacular UI"],
+          ["🔓", "Open source", "MIT, open-weight models only"],
+        ].map(([icon, title, sub]) => (
+          <span key={title} className="inline-flex items-center gap-1.5 rounded-full border bg-background/70 px-3 py-1.5 backdrop-blur">
+            <span aria-hidden>{icon}</span>
+            <span className="font-semibold">{title}</span>
+            <span className="hidden text-muted-foreground sm:inline">· {sub}</span>
+          </span>
+        ))}
+      </section>
       <section className="mx-auto w-full max-w-3xl px-4 pb-16">
         <JaanchForm />
       </section>

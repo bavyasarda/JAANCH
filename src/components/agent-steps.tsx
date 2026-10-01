@@ -19,7 +19,8 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   fallback: Zap,
 };
 
-export function AgentSteps({ steps, running, title = "Agent steps" }: { steps: AgentStep[]; running: boolean; title?: string }) {
+export function AgentSteps({ steps, running, title = "Agent steps", models, planner }: { steps: AgentStep[]; running: boolean; title?: string; models?: { vision: string; text: string; helper: string }; planner?: "llm" | "scripted" }) {
+  const total = steps.reduce((a, s) => a + (s.durationMs ?? 0), 0);
   if (steps.length === 0 && !running) return null;
   return (
     <div className="rounded-xl border bg-card">
@@ -54,6 +55,12 @@ export function AgentSteps({ steps, running, title = "Agent steps" }: { steps: A
           <li className="flex items-center gap-2 px-4 py-3 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> Thinking…</li>
         )}
       </ol>
+      {!running && steps.length > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-2 text-[11px] text-muted-foreground">
+          <span>{planner === "scripted" ? "Planner: built-in deterministic plan (model unavailable)" : "Planner: LLM with tool calling"} · tool time {(total / 1000).toFixed(1)}s</span>
+          {models && <span>Open-weight models · vision {models.vision} · planner {models.text} · drafting {models.helper}</span>}
+        </div>
+      )}
     </div>
   );
 }

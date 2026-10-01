@@ -172,7 +172,7 @@ export function JaanchForm() {
           </Alert>
         )}
         {result.status === "done" && <ResultsView state={result.state} language={language} summary={result.summary} role={role} imageDataUrl={img?.dataUrl} />}
-        <AgentSteps steps={result.steps} running={running} title={language === "en-IN" ? "Agent steps" : `Agent steps · ${t(language, "agentSteps")}`} />
+        <AgentSteps steps={result.steps} running={running} title={language === "en-IN" ? "Agent steps" : `Agent steps · ${t(language, "agentSteps")}`} models={result.state.models} planner={result.planner} />
         {result.status === "done" && (
           <div className="flex justify-center">
             <Button variant="ghost" size="sm" onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }}><RotateCcw className="size-4" /> {t(language, "tryAnother")}</Button>
