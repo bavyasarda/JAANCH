@@ -29,7 +29,7 @@ function labelSummary(d: Declarations): string {
 
 /** Steps that must be finished before the verdict / role action can be produced. */
 function pendingPrereq(ctx: RunContext): string | null {
-  if (ctx.input.imageBase64 && !ctx.state.label) return "Call extractLabel first.";
+  if (ctx.input.imageBase64 && !ctx.state.label && !ctx.state.extractError) return "Call extractLabel first.";
   if (ctx.input.url && !ctx.state.listing && !ctx.state.listingError) return "Call scrapeListing first.";
   if (ctx.input.listingText && !ctx.state.listing) return "Call parseListingText first.";
   if (!ctx.state.rules) return "Call checkRules first.";
@@ -49,7 +49,7 @@ function makeActions(ctx: RunContext) {
         out = await ctx.record("extractLabel", why, () => extractLabel({ imageBase64: ctx.input.imageBase64!, mediaType: ctx.input.mediaType ?? "image/jpeg" }), (o) => labelSummary(o.declarations));
       } catch (e) {
         const friendly = friendlyModelError(e);
-        ctx.patch({ extractError: friendly });
+        ctx.patch({ extractError: friendly, warnings: [...(ctx.state.warnings ?? []), `Label photo could not be read: ${friendly}`] });
         return { error: friendly, hint: "Do not retry; continue with other inputs or finish." };
       }
       if (out.warnings.length) ctx.patch({ warnings: [...(ctx.state.warnings ?? []), ...out.warnings] });
@@ -73,7 +73,8 @@ function makeActions(ctx: RunContext) {
       const pre = pendingPrereq(ctx);
       const rules = ctx.state.rules;
       if (pre || !rules) return { error: pre ?? "Call checkRules first." };
-      const facts = verdictFacts(rules, ctx.state.compare, ctx.state.label?.productName);
+      let facts = verdictFacts(rules, ctx.state.compare, (ctx.state.label ?? ctx.state.listing)?.productName);
+      if (ctx.state.rulesSource === "listing") facts += `\nNote: these results come from the ONLINE LISTING text only${ctx.state.extractError ? " because the label photo could not be read (" + ctx.state.extractError + ")" : ""}; listings often omit the packing date and consumer-care details, so "missing" items must be confirmed on the physical pack.`;
       const out = await ctx.record("explainVerdict", why, () => explainVerdict({ facts, language: ctx.input.language, question: ctx.input.question }), (o) => `Verdict explained in ${languageName(o.language)} (${o.text.length} chars).`);
       ctx.patch({ verdictText: out });
       return { done: true, english: out.english };

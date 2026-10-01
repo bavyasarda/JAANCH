@@ -195,6 +195,7 @@ paraphrase the consolidated text fetched during the build.
 - **Text size** cannot be measured from a photo. The vision model returns bounding boxes for the MRP line and a body-text line; if the declaration line is clearly shorter than body text it is flagged for review. This is an estimate and is model-dependent.
 - **Country of origin** is only accepted when the label text contains an explicit "Country of Origin" / "Made in" / "मूल देश" statement; a value inferred from an address is flagged for review.
 - **Consumer care** passes when both a phone number and an e-mail are found, is flagged when only one is found, and is missing when neither is.
+- **Listing-only checks.** If there is no usable label photo but a listing was parsed, the rule engine runs on the listing text and the verdict says so; listings usually omit the packing date and consumer-care details, so those "missing" findings must be confirmed on the physical pack.
 - **Scraping.** Major Indian marketplaces block server-side fetches; the paste-text fallback is the expected path and is what the demo uses.
 - **Report hand-off.** The `/report` page receives the finished run through `sessionStorage` in the same tab (regenerable, cleared on tab close). Nothing important is stored in `localStorage`.
 - **Food, cosmetics and drugs** have sector-specific labelling laws (FSS Act, Drugs & Cosmetics Rules); Jaanch applies the Legal Metrology declarations only and says so in the rule descriptions.
