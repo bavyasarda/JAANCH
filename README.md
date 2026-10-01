@@ -13,7 +13,6 @@ Indian language (text + voice), and then takes the next step for them:
 | Inspector | Generates a printable compliance report (Save as PDF) |
 
 Live: **https://jaanch-delta.vercel.app** · Built for Bharat Agentic 2026 (12-hour hackathon).
-Inspired by **SIH 2026 PS 26034** (Ministry of Consumer Affairs, Food and Public Distribution).
 
 > **Disclaimer:** Jaanch is an assistive tool, not an official Legal Metrology finding.
 
@@ -215,7 +214,6 @@ paraphrase the consolidated text fetched during the build.
 
 ## Credits
 
-- Problem inspiration: **SIH 2026 PS 26034**, Ministry of Consumer Affairs, Food and Public Distribution, Government of India
 - Rules text: Department of Consumer Affairs — *Legal Metrology (Packaged Commodities) Rules, 2011 with all amendments*
 - Open-weight models served by **Groq**: Qwen 3.8 27B (Alibaba), gpt-oss-120b / 20b (OpenAI, Apache-2.0)
 - Open-source libraries: Next.js, React, TypeScript, Tailwind CSS, shadcn/ui, Radix UI, lucide-react, Vercel AI SDK, cheerio, zod, sharp, mermaid, next-themes, tsx

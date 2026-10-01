@@ -26,7 +26,7 @@ export default function AboutPage() {
           Legal Metrology (Packaged Commodities) Rules, 2011 — who made it, how much is inside, the MRP inclusive of all taxes,
           when it was packed, whom to call, and where it came from. Most shoppers cannot tell a compliant pack from a non-compliant
           one, small sellers get fined for mistakes they did not know about, and inspectors check packs by hand. The rules exist
-          mostly in English legalese. Inspired by SIH 2026 problem statement 26034 (Ministry of Consumer Affairs).
+          mostly in English legalese.
         </p>
         <p className="mt-3 text-muted-foreground">
           <strong className="text-foreground">The solution.</strong> Jaanch reads the label (or the online listing), runs a deterministic rule engine, and then
