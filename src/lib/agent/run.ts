@@ -4,6 +4,8 @@ import { textModel, groqTextOptions, MODEL_IDS, friendlyModelError } from "@/lib
 import { extractLabel } from "@/lib/tools/extract-label";
 import { checkRules } from "@/lib/tools/check-rules";
 import { explainVerdict, verdictFacts } from "@/lib/tools/explain-verdict";
+import { draftGrievance } from "@/lib/tools/draft-grievance";
+import { makeFixList } from "@/lib/tools/make-fix-list";
 import { languageName, ROLES } from "@/lib/constants";
 import type { CheckRulesOutput, Declarations } from "@/lib/types";
 import type { RunContext, RunInput, StreamEvent } from "./context";
@@ -51,6 +53,26 @@ function makeActions(ctx: RunContext) {
       ctx.patch({ verdictText: out });
       return { done: true, english: out.english };
     },
+    async draftGrievance(why: string) {
+      if (!ctx.state.rules) return { error: "Run checkRules first." };
+      const rules = ctx.state.rules;
+      const out = await ctx.record("draftGrievance", why, () => draftGrievance({ label: ctx.state.label, rules, compare: ctx.state.compare, listingUrl: ctx.input.url, language: ctx.input.language }), (o) => `Grievance drafted in ${languageName(o.language)} + English (${o.text.length} chars).`);
+      ctx.patch({ grievance: out });
+      return { done: true, subject: out.subject };
+    },
+    async makeFixList(why: string) {
+      if (!ctx.state.rules) return { error: "Run checkRules first." };
+      const rules = ctx.state.rules;
+      const out = await ctx.record("makeFixList", why, () => makeFixList({ label: ctx.state.label, rules, language: ctx.input.language }), (o) => `${o.items.length} correction(s) listed for the seller.`);
+      ctx.patch({ fixList: out });
+      return { done: true, corrections: out.items.length };
+    },
+    async prepareReport(why: string) {
+      if (!ctx.state.rules) return { error: "Run checkRules first." };
+      await ctx.record("prepareReport", why, async () => true, () => "Compliance report assembled; open it from the action panel and save as PDF.");
+      ctx.patch({ reportReady: true });
+      return { done: true };
+    },
   };
 }
 type Actions = ReturnType<typeof makeActions>;
@@ -68,19 +90,36 @@ function makeTools(a: Actions) {
       execute: ({ reason: why, source }) => a.checkRules(why, source),
     }),
     explainVerdict: tool({
-      description: "Write the plain-language verdict for the user in their chosen language (plus English). Call after checkRules, before finishing.",
+      description: "Write the plain-language verdict for the user in their chosen language (plus English). Call after checkRules.",
       inputSchema: z.object({ reason }),
       execute: ({ reason: why }) => a.explainVerdict(why),
     }),
+    draftGrievance: tool({
+      description: "CONSUMER role action: draft a complaint for the National Consumer Helpline in the user's language plus English. Call after checkRules when the role is consumer.",
+      inputSchema: z.object({ reason }),
+      execute: ({ reason: why }) => a.draftGrievance(why),
+    }),
+    makeFixList: tool({
+      description: "SELLER role action: produce corrected label text for every failing rule. Call after checkRules when the role is seller.",
+      inputSchema: z.object({ reason }),
+      execute: ({ reason: why }) => a.makeFixList(why),
+    }),
+    prepareReport: tool({
+      description: "INSPECTOR role action: assemble the printable compliance report. Call after checkRules when the role is inspector.",
+      inputSchema: z.object({ reason }),
+      execute: ({ reason: why }) => a.prepareReport(why),
+    }),
   };
 }
+
+const ROLE_ACTION: Record<string, "draftGrievance" | "makeFixList" | "prepareReport"> = { consumer: "draftGrievance", seller: "makeFixList", inspector: "prepareReport" };
 
 function systemPrompt(input: RunInput): string {
   const role = ROLES.find((r) => r.value === input.role);
   return `You are Jaanch, an agent that checks Indian packaged-product labels against the Legal Metrology (Packaged Commodities) Rules, 2011.
 You plan and call tools; you never decide compliance yourself — only the checkRules tool does. Do not invent legal clauses.
 Inputs available: image=${input.imageBase64 ? "yes" : "no"}, productLink=${input.url ? "yes" : "no"}, pastedListing=${input.listingText ? "yes" : "no"}. User role: ${role?.label ?? input.role}. Language: ${languageName(input.language)}.${input.question ? ` User's question: "${input.question}"` : ""}
-Plan: 1) extractLabel if an image exists. 2) checkRules. 3) explainVerdict. Then reply with ONE short English sentence summarising the outcome for the user (no markdown). Call one tool at a time. Give a one-line reason with every call.`;
+Plan: 1) extractLabel if an image exists. 2) checkRules. 3) explainVerdict. 4) The role action: ${ROLE_ACTION[input.role] ?? "draftGrievance"} (every run must end with the action for the user's role, even when compliant). Then reply with ONE short English sentence summarising the outcome for the user (no markdown). Call one tool at a time. Give a one-line reason with every call.`;
 }
 
 /** Deterministic pipeline used when the LLM planner is unavailable (rate limit / outage) or skipped a required step. */
@@ -88,6 +127,12 @@ async function runScripted(ctx: RunContext, a: Actions, note: string) {
   if (ctx.input.imageBase64 && !ctx.state.label) await a.extractLabel(`${note}: read the label first.`);
   if (ctx.state.label && !ctx.state.rules) await a.checkRules(`${note}: run the deterministic rule engine.`, "label");
   if (ctx.state.rules && !ctx.state.verdictText) await a.explainVerdict(`${note}: explain the verdict in ${languageName(ctx.input.language)}.`);
+  if (ctx.state.rules) {
+    const action = ROLE_ACTION[ctx.input.role] ?? "draftGrievance";
+    if (action === "draftGrievance" && !ctx.state.grievance) await a.draftGrievance(`${note}: the user is a consumer, so draft the helpline grievance.`);
+    if (action === "makeFixList" && !ctx.state.fixList) await a.makeFixList(`${note}: the user is a seller, so list the label corrections.`);
+    if (action === "prepareReport" && !ctx.state.reportReady) await a.prepareReport(`${note}: the user is an inspector, so prepare the report.`);
+  }
 }
 
 export async function runJaanch(input: RunInput, emit: (ev: StreamEvent) => void): Promise<void> {
@@ -111,7 +156,7 @@ export async function runJaanch(input: RunInput, emit: (ev: StreamEvent) => void
       system: systemPrompt(input),
       prompt: "Start the check now.",
       tools,
-      stopWhen: stepCountIs(7),
+      stopWhen: stepCountIs(8),
       temperature: 0,
       maxOutputTokens: 600,
       providerOptions: groqTextOptions,

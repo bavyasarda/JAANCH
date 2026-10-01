@@ -4,7 +4,8 @@ import { CheckCircle2, XCircle, AlertTriangle, ChevronDown, Volume2, Square } fr
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DISCLAIMER, LANGUAGES } from "@/lib/constants";
+import { DISCLAIMER, LANGUAGES, type Role } from "@/lib/constants";
+import { ActionPanel } from "@/components/action-panel";
 import type { RunState } from "@/lib/agent/context";
 import type { RuleResult, Severity } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -65,7 +66,7 @@ function RuleRow({ r }: { r: RuleResult }) {
   );
 }
 
-export function ResultsView({ state, language, summary }: { state: RunState; language: string; summary: string }) {
+export function ResultsView({ state, language, summary, role, imageDataUrl }: { state: RunState; language: string; summary: string; role: Role; imageDataUrl?: string }) {
   const [showPass, setShowPass] = useState(false);
   const { speak, stop, speaking } = useSpeak();
   const rules = state.rules;
@@ -104,6 +105,8 @@ export function ResultsView({ state, language, summary }: { state: RunState; lan
           <p className="text-xs opacity-75">{DISCLAIMER}</p>
         </CardContent>
       </Card>
+
+      <ActionPanel state={state} role={role} language={language} imageDataUrl={imageDataUrl} summary={summary} />
 
       {(bad.length > 0 || rev.length > 0) && (
         <Card>

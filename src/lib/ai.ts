@@ -47,7 +47,7 @@ export function helperModel(): LanguageModel {
 }
 
 /** Groq-specific options that are harmless on other providers. */
-export const groqTextOptions = provider === "groq" ? { groq: { reasoningFormat: "hidden" as const, parallelToolCalls: false } } : undefined;
+export const groqTextOptions = provider === "groq" ? { groq: { reasoningFormat: "hidden" as const, reasoningEffort: "low" as const, parallelToolCalls: false } } : undefined;
 export const groqVisionOptions = provider === "groq" ? { groq: { reasoningFormat: "hidden" as const, reasoningEffort: "none" as const } } : undefined;
 
 /** Pull a JSON object out of a model reply that may include prose or code fences. */

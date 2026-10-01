@@ -149,7 +149,7 @@ export function JaanchForm() {
             </AlertDescription>
           </Alert>
         )}
-        {result.status === "done" && <ResultsView state={result.state} language={language} summary={result.summary} />}
+        {result.status === "done" && <ResultsView state={result.state} language={language} summary={result.summary} role={role} imageDataUrl={img?.dataUrl} />}
         <AgentSteps steps={result.steps} running={running} />
         {result.status === "done" && (
           <div className="flex justify-center">
