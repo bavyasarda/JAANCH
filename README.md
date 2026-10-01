@@ -40,6 +40,20 @@ legalese.
 **Pass/fail decisions are made only by the rule engine (`src/lib/tools/check-rules.ts` over
 `src/data/rules.json`). The LLM extracts, plans, explains and drafts — it never decides compliance.**
 
+## Impact
+
+| Who | Today | With Jaanch | Measurable value |
+| --- | --- | --- | --- |
+| Consumer | Cannot tell a compliant pack from a non-compliant one; grievances need English and legal wording | 10-second photo check in their own language; helpline grievance drafted and ready to send | Minutes instead of hours per complaint; grievances cite the exact rule, so they are actionable |
+| MSME seller | Learns about label errors from a Legal Metrology notice (fines ₹25,000+ per offence under the LM Act, 2009) | Corrected label text before the print run | Avoids reprints, penalties and e-commerce delistings |
+| Inspector | Manual pack-by-pack checks with no uniform record | Printable rule-by-rule report per pack, same rule set every time | More packs checked per day; consistent, reviewable findings |
+
+Every run is about 4K model tokens (~₹0.05 on paid tiers), so the economics work at Bharat scale.
+
+**Path to adoption.** The rule engine is data-driven (`rules.json`), so the Legal Metrology department or a consumer body can verify and own the rule set without code changes; FSSAI and BIS rule packs can be added as further JSON files. The app is a PWA that runs on any phone, needs no login and no database, and the API lets marketplaces or helpline systems call it directly.
+
+**Responsible by design.** The LLM never decides compliance; every result cites its clause and is marked unverified until checked; text-size findings can only be "needs review"; images are compressed client-side and never stored; the disclaimer appears wherever results appear.
+
 ## Agent workflow
 
 ```mermaid
