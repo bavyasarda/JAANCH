@@ -7,7 +7,7 @@ export function SiteFooter() {
         <p>{DISCLAIMER}</p>
         <p>
           Open source · MIT ·{" "}
-          <a className="underline underline-offset-2" href="https://github.com/PulkitChatwal/jaanch" target="_blank" rel="noreferrer">
+          <a className="underline underline-offset-2" href="https://github.com/bavyasarda/JAANCH" target="_blank" rel="noreferrer">
             GitHub
           </a>
         </p>

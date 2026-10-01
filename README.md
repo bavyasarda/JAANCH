@@ -108,8 +108,8 @@ fallback runs the same tools in order and the timeline says so.
 ## Setup
 
 ```bash
-git clone https://github.com/PulkitChatwal/jaanch
-cd jaanch
+git clone https://github.com/bavyasarda/JAANCH.git
+cd JAANCH
 npm install
 cp .env.example .env.local   # add your GROQ_API_KEY
 npm run dev                  # http://localhost:3000
@@ -218,7 +218,6 @@ paraphrase the consolidated text fetched during the build.
 - Open-weight models served by **Groq**: Qwen 3.8 27B (Alibaba), gpt-oss-120b / 20b (OpenAI, Apache-2.0)
 - Open-source libraries: Next.js, React, TypeScript, Tailwind CSS, shadcn/ui, Radix UI, lucide-react, Vercel AI SDK, cheerio, zod, sharp, mermaid, next-themes, tsx
 - Fonts: Noto Sans family (Google Fonts, SIL OFL)
-- Built with Claude Code.
 
 ## License
 
