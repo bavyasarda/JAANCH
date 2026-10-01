@@ -40,6 +40,7 @@ export interface RunState {
   listing?: Declarations;
   listingError?: string;
   rules?: CheckRulesOutput;
+  rulesSource?: "label" | "listing";
   listingRules?: CheckRulesOutput;
   compare?: CompareOutput;
   verdictText?: VerdictText;

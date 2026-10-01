@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { Camera, Link2, Mic, ClipboardPaste, Search, X, RotateCcw, Images } from "lucide-react";
+import { Camera, Link2, Mic, MicOff, ClipboardPaste, Search, X, RotateCcw, Images, MessageCircleQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LANGUAGES, ROLES, SAMPLE_LABELS, type LanguageCode, type Role } from "@/lib/constants";
 import { compressImage, urlToFile } from "@/lib/image";
 import { useJaanchRun } from "@/hooks/use-jaanch-run";
+import { useSpeechInput } from "@/hooks/use-speech-input";
 import { AgentSteps } from "@/components/agent-steps";
 import { ResultsView } from "@/components/results-view";
 
@@ -26,10 +27,12 @@ export function JaanchForm() {
   const [showPaste, setShowPaste] = useState(false);
   const [showSamples, setShowSamples] = useState(false);
   const [img, setImg] = useState<Img | null>(null);
+  const [question, setQuestion] = useState("");
   const [imgBusy, setImgBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const { result, run, reset } = useJaanchRun();
+  const speech = useSpeechInput(language, (t) => setQuestion(t));
 
   async function loadFile(file: File) {
     setImgBusy(true);
@@ -51,7 +54,7 @@ export function JaanchForm() {
   async function submit() {
     if (!canRun || running) return;
     setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-    await run({ imageBase64: img?.base64, mediaType: img?.mediaType, url: url.trim() || undefined, listingText: pasted.trim() || undefined, role, language });
+    await run({ imageBase64: img?.base64, mediaType: img?.mediaType, url: url.trim() || undefined, listingText: pasted.trim() || undefined, role, language, question: question.trim() || undefined });
   }
 
   const doneSteps = result.steps.filter((s) => s.status === "done").length;
@@ -122,12 +125,21 @@ export function JaanchForm() {
             </div>
           </div>
 
+          <div className="grid gap-2">
+            <Label htmlFor="q">Ask a question (optional) · सवाल पूछें</Label>
+            <div className="relative">
+              <MessageCircleQuestion className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input id="q" className="pl-9" placeholder={speech.listening ? "Listening… bolo" : "e.g. Kya is packet par MRP sahi likha hai?"} value={question} onChange={(e) => setQuestion(e.target.value)} />
+            </div>
+            {speech.error && <p className="text-xs text-destructive">{speech.error}</p>}
+          </div>
+
           <div className="flex gap-2">
             <Button size="lg" className="h-12 flex-1 text-base font-semibold" disabled={!canRun || running || imgBusy} onClick={submit}>
               <Search className="size-5" /> {running ? "Jaanch ho rahi hai…" : "Jaanch karo"}
             </Button>
-            <Button size="lg" variant="outline" className="h-12" aria-label="Ask by voice" disabled title="Voice input arrives in Phase 5">
-              <Mic className="size-5" />
+            <Button size="lg" variant={speech.listening ? "destructive" : "outline"} className="h-12" aria-label={speech.listening ? "Stop listening" : "Ask by voice"} disabled={speech.supported === false} title={speech.supported === false ? "Voice input is not supported in this browser (try Chrome)" : `Speak in ${LANGUAGES.find((l) => l.value === language)?.english ?? "your language"}`} onClick={() => (speech.listening ? speech.stop() : speech.start())}>
+              {speech.listening ? <MicOff className="size-5 animate-pulse" /> : <Mic className="size-5" />}
             </Button>
           </div>
         </CardContent>
@@ -146,6 +158,15 @@ export function JaanchForm() {
             <AlertDescription className="flex flex-col gap-2">
               <span>{result.error}</span>
               <Button size="sm" variant="outline" className="self-start" onClick={submit}><RotateCcw className="size-4" /> Retry</Button>
+            </AlertDescription>
+          </Alert>
+        )}
+        {result.state.listingError && !pasted && (
+          <Alert>
+            <AlertTitle>Could not read the product link</AlertTitle>
+            <AlertDescription className="flex flex-col gap-2">
+              <span>{result.state.listingError}</span>
+              <Button size="sm" variant="outline" className="self-start" onClick={() => { setShowPaste(true); window.scrollTo({ top: 0, behavior: "smooth" }); }}><ClipboardPaste className="size-4" /> Paste the listing text instead</Button>
             </AlertDescription>
           </Alert>
         )}

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { CheckCircle2, XCircle, AlertTriangle, ChevronDown, Volume2, Square } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, ChevronDown, Volume2, Square, GitCompare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -105,6 +105,28 @@ export function ResultsView({ state, language, summary, role, imageDataUrl }: { 
           <p className="text-xs opacity-75">{DISCLAIMER}</p>
         </CardContent>
       </Card>
+
+      {state.compare && (
+        <Card>
+          <CardHeader><CardTitle className="flex items-center gap-2 text-base"><GitCompare className="size-4 text-primary" /> Label vs online listing</CardTitle></CardHeader>
+          <CardContent>
+            {state.compare.mismatches.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No mismatches on {state.compare.compared.length ? state.compare.compared.join(", ") : "the comparable fields"}.</p>
+            ) : (
+              <ul className="divide-y">
+                {state.compare.mismatches.map((m) => (
+                  <li key={m.field} className="py-2.5">
+                    <div className="flex flex-wrap items-center gap-2"><span className={cn("rounded-full border px-2 py-0.5 text-[11px] font-medium", SEV[m.severity])}>{m.severity}</span><span className="font-medium capitalize">{m.field.replace(/([A-Z])/g, " $1")}</span></div>
+                    <p className="mt-1 text-sm"><span className="text-muted-foreground">Pack:</span> {m.label ?? "—"} · <span className="text-muted-foreground">Listing:</span> {m.listing ?? "—"}</p>
+                    <p className="text-xs text-muted-foreground">{m.reason}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {state.rulesSource === "listing" && <p className="mt-2 text-xs text-muted-foreground">No label photo was given, so the rule check above was run on the listing text alone.</p>}
+          </CardContent>
+        </Card>
+      )}
 
       <ActionPanel state={state} role={role} language={language} imageDataUrl={imageDataUrl} summary={summary} />
 

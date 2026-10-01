@@ -50,6 +50,7 @@ export async function extractLabel(input: ExtractLabelInput): Promise<ExtractLab
     system: SYSTEM,
     temperature: 0,
     maxOutputTokens: 2500,
+    maxRetries: 4, // Groq free tier: 8K tokens/min per model; exponential backoff covers the reset window
     providerOptions: groqVisionOptions,
     messages: [
       {

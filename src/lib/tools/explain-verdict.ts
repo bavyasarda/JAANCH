@@ -13,19 +13,21 @@ export function verdictFacts(rules: CheckRulesOutput, compare?: CompareOutput, p
   const rev = rules.results.filter((r) => r.status === "NEEDS_REVIEW");
   if (bad.length) lines.push(`Violations (${bad.length}): ` + bad.map((r) => `${r.title} — ${r.status} — ${r.reason} [${r.source}]`).join(" | "));
   if (rev.length) lines.push(`Needs review (${rev.length}): ` + rev.map((r) => `${r.title} — ${r.reason}`).join(" | "));
-  if (compare?.mismatches.length) lines.push(`Label vs listing mismatches: ` + compare.mismatches.map((m) => `${m.field}: label '${m.label}' vs listing '${m.listing}'`).join(" | "));
+  if (compare?.mismatches.length) lines.push(`Label vs online listing mismatches (${compare.mismatches.length}): ` + compare.mismatches.map((m) => `${m.field}: pack says '${m.label}', listing says '${m.listing}' — ${m.reason}`).join(" | "));
+  else if (compare) lines.push(`Label vs online listing: no mismatches on ${compare.compared.join(", ") || "comparable fields"}.`);
   lines.push(`Rules passed: ${rules.counts.PASS}.`);
   return lines.join("\n");
 }
 
-export async function explainVerdict(args: { facts: string; language: string }): Promise<VerdictText> {
+export async function explainVerdict(args: { facts: string; language: string; question?: string }): Promise<VerdictText> {
   const lang = languageName(args.language);
+  const q = args.question?.trim();
   const { text } = await generateText({
     model: helperModel(),
     temperature: 0.2,
     maxOutputTokens: 900,
     providerOptions: groqTextOptions,
-    system: `You explain packaged-goods label check results to ordinary people in India in simple words. Use ONLY the facts given; do not add rules, penalties or legal claims that are not in the facts. Keep it to 3-5 short sentences, friendly and clear, mention each violation plainly. Return ONLY JSON: {"text": "<explanation in ${lang}>", "english": "<same explanation in English>"}. ${lang === "English" ? 'Set "text" and "english" to the same English explanation.' : `Write "text" in natural ${lang} (native script), not transliterated English.`}`,
+    system: `You explain packaged-goods label check results to ordinary people in India in simple words. Use ONLY the facts given; do not add rules, penalties or legal claims that are not in the facts. Keep it to 3-5 short sentences, friendly and clear, mention each violation plainly.${q ? ` The user also asked: "${q}" — answer it in one extra sentence using only the facts (say if the facts cannot answer it).` : ""} Return ONLY JSON: {"text": "<explanation in ${lang}>", "english": "<same explanation in English>"}. ${lang === "English" ? 'Set "text" and "english" to the same English explanation.' : `Write "text" in natural ${lang} (native script), not transliterated English.`}`,
     prompt: args.facts,
   });
   try {
