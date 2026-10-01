@@ -264,6 +264,7 @@ export async function runJaanch(input: RunInput, emit: (ev: StreamEvent) => void
     return;
   }
   void isQuotaError;
-  if (!summary) summary = ctx.state.verdictText?.english ?? rulesSummary(ctx.state.rules);
+  // The deterministic-facts verdict is more reliable than the planner's closing sentence.
+  summary = ctx.state.verdictText?.english ?? summary ?? rulesSummary(ctx.state.rules);
   emit({ type: "final", summary, state: ctx.state, steps: ctx.steps, planner });
 }

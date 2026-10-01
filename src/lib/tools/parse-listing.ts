@@ -27,6 +27,7 @@ export async function parseListingText(text: string): Promise<{ declarations: De
   const declarations = r.success ? r.data : { ...EMPTY_DECLARATIONS, ...(parsed as Partial<Declarations>) };
   declarations.textSize = { flag: "unknown", confidence: 0 };
   declarations.textSizeNote = "Not applicable to an online listing.";
+  declarations.sourceKind = "listing";
   if (!declarations.rawText) declarations.rawText = text.slice(0, 2000);
   return { declarations, model: MODEL_IDS.helper, warnings };
 }

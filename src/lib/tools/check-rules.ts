@@ -176,6 +176,10 @@ export function checkRules(declarations: Declarations): CheckRulesOutput {
       notApplicable.push({ ruleId: rule.id, title: rule.title, reason: "Applies to imported products only; this label does not appear to be imported." });
       continue;
     }
+    if (rule.customCheck === "textSize" && d.sourceKind === "listing") {
+      notApplicable.push({ ruleId: rule.id, title: rule.title, reason: "Text size can only be assessed from a photo of the pack, not from an online listing." });
+      continue;
+    }
     if (rule.appliesTo === "domestic" && imported) {
       notApplicable.push({ ruleId: rule.id, title: rule.title, reason: "Applies to domestic products only." });
       continue;

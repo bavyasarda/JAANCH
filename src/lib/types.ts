@@ -41,6 +41,8 @@ export const DeclarationsSchema = z.object({
   mrpLineBox: z.array(z.number()).length(4).nullable().catch(null),
   bodyTextLineBox: z.array(z.number()).length(4).nullable().catch(null),
   textSizeNote: nullableString,
+  /** Where these declarations came from; text-size rules only apply to label photos. */
+  sourceKind: z.enum(["label", "listing"]).catch("label"),
 });
 export type Declarations = z.infer<typeof DeclarationsSchema>;
 
@@ -67,6 +69,7 @@ export const EMPTY_DECLARATIONS: Declarations = {
   mrpLineBox: null,
   bodyTextLineBox: null,
   textSizeNote: null,
+  sourceKind: "label",
 };
 
 export type Severity = "high" | "medium" | "low";
