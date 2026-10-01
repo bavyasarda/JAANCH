@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Copy, Check, FileText, Wrench, Printer, ExternalLink } from "lucide-react";
+import { Copy, Check, FileText, Wrench, Printer, ExternalLink, MessageCircle } from "lucide-react";
+import { t } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,6 +15,15 @@ function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) 
   return (
     <Button size="sm" variant="outline" onClick={async () => { await navigator.clipboard.writeText(text); setDone(true); setTimeout(() => setDone(false), 1500); }}>
       {done ? <Check className="size-4" /> : <Copy className="size-4" />} {done ? "Copied" : label}
+    </Button>
+  );
+}
+
+function WhatsAppButton({ text, label }: { text: string; label: string }) {
+  const href = `https://wa.me/?text=${encodeURIComponent(text.slice(0, 4000))}`;
+  return (
+    <Button size="sm" variant="outline" asChild>
+      <a href={href} target="_blank" rel="noreferrer"><MessageCircle className="size-4 text-green-600" /> {label}</a>
     </Button>
   );
 }
@@ -32,7 +42,7 @@ export function ActionPanel({ state, role, language, imageDataUrl, summary }: { 
     return (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2">
-          <CardTitle className="flex items-center gap-2 text-base"><FileText className="size-4 text-primary" /> Grievance draft · शिकायत</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base"><FileText className="size-4 text-primary" /> {language === "en-IN" ? "Grievance draft" : `Grievance draft · ${t(language, "grievance")}`}</CardTitle>
           <Button size="sm" variant="ghost" asChild><a href="https://consumerhelpline.gov.in/" target="_blank" rel="noreferrer">NCH portal <ExternalLink className="size-3.5" /></a></Button>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
@@ -45,12 +55,12 @@ export function ActionPanel({ state, role, language, imageDataUrl, summary }: { 
             {bilingual && (
               <TabsContent value="local" className="flex flex-col gap-2">
                 <pre className="whitespace-pre-wrap rounded-lg border bg-muted/40 p-3 font-sans text-sm leading-relaxed">{g.text}</pre>
-                <CopyButton text={g.text} label={`Copy ${langLabel}`} />
+                <div className="flex flex-wrap gap-2"><CopyButton text={g.text} label={`${t(language, "copy")} ${langLabel}`} /><WhatsAppButton text={g.text} label={t(language, "shareWhatsApp")} /></div>
               </TabsContent>
             )}
             <TabsContent value="en" className="flex flex-col gap-2">
               <pre className="whitespace-pre-wrap rounded-lg border bg-muted/40 p-3 font-sans text-sm leading-relaxed">{g.english}</pre>
-              <CopyButton text={g.english} label="Copy English" />
+              <div className="flex flex-wrap gap-2"><CopyButton text={g.english} label="Copy English" /><WhatsAppButton text={g.english} label="Share on WhatsApp" /></div>
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -64,7 +74,7 @@ export function ActionPanel({ state, role, language, imageDataUrl, summary }: { 
     return (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2">
-          <CardTitle className="flex items-center gap-2 text-base"><Wrench className="size-4 text-primary" /> Fix-list for the next print run</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base"><Wrench className="size-4 text-primary" /> {t(language, "fixList")}</CardTitle>
           {f.items.length > 0 && <CopyButton text={all} label="Copy all" />}
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
@@ -82,7 +92,7 @@ export function ActionPanel({ state, role, language, imageDataUrl, summary }: { 
               </li>
             ))}
           </ol>
-          <Button variant="outline" size="sm" className="self-start" onClick={openReport}><Printer className="size-4" /> Open report</Button>
+          <Button variant="outline" size="sm" className="self-start" onClick={openReport}><Printer className="size-4" /> {t(language, "openReport")}</Button>
         </CardContent>
       </Card>
     );
@@ -91,10 +101,10 @@ export function ActionPanel({ state, role, language, imageDataUrl, summary }: { 
   // Inspector (or any role once results exist): printable report.
   return (
     <Card>
-      <CardHeader><CardTitle className="flex items-center gap-2 text-base"><Printer className="size-4 text-primary" /> Compliance report</CardTitle></CardHeader>
+      <CardHeader><CardTitle className="flex items-center gap-2 text-base"><Printer className="size-4 text-primary" /> {t(language, "report")}</CardTitle></CardHeader>
       <CardContent className="flex flex-col gap-3">
         <p className="text-sm text-muted-foreground">A print-friendly report with the label photo, every rule result, timestamp and disclaimer. Use your browser&apos;s Save as PDF.</p>
-        <Button onClick={openReport} className="self-start"><Printer className="size-4" /> Open report</Button>
+        <Button onClick={openReport} className="self-start"><Printer className="size-4" /> {t(language, "openReport")}</Button>
       </CardContent>
     </Card>
   );

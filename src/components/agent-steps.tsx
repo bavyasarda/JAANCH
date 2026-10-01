@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   plan: Brain,
   extractLabel: ScanText,
+  "extractLabel (cached)": ScanText,
   checkRules: Scale,
   explainVerdict: Languages,
   translate: Languages,
@@ -18,12 +19,12 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   fallback: Zap,
 };
 
-export function AgentSteps({ steps, running }: { steps: AgentStep[]; running: boolean }) {
+export function AgentSteps({ steps, running, title = "Agent steps" }: { steps: AgentStep[]; running: boolean; title?: string }) {
   if (steps.length === 0 && !running) return null;
   return (
     <div className="rounded-xl border bg-card">
       <div className="flex items-center justify-between border-b px-4 py-2.5">
-        <h3 className="text-sm font-semibold">Agent steps</h3>
+        <h3 className="text-sm font-semibold">{title}</h3>
         <span className="text-xs text-muted-foreground">{steps.filter((s) => s.status === "done").length} done{running ? " · working…" : ""}</span>
       </div>
       <ol className="divide-y">

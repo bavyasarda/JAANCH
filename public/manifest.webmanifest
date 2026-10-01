@@ -1,0 +1,14 @@
+{
+  "name": "Jaanch — Packet ki jaanch, aapki bhasha mein",
+  "short_name": "Jaanch",
+  "description": "Check a packaged product's label against India's Legal Metrology rules, in your language.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdfbf7",
+  "theme_color": "#e07b1a",
+  "lang": "en-IN",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,645 @@
+{
+ "$comment": "Real extractLabel outputs for the bundled sample labels (qwen/qwen3.8-27b, captured by npm run verify). Used ONLY when the live vision call fails (quota/outage) and the input is a bundled sample; the UI and agent timeline label such steps as cached.",
+ "samples": {
+  "01-compliant-en.png": {
+   "brandName": "SUNRISE VALLEY",
+   "productName": "Classic Thick Poha",
+   "commodityName": "Flattened Rice (Poha)",
+   "manufacturer": {
+    "name": "Sunrise Valley Foods Pvt. Ltd.",
+    "address": "Plot 14, MIDC Industrial Area, Satpur, Nashik 422007, Maharashtra, India"
+   },
+   "packer": {
+    "name": "Sunrise Valley Foods Pvt. Ltd.",
+    "address": "Plot 14, MIDC Industrial Area, Satpur, Nashik 422007, Maharashtra, India"
+   },
+   "importer": {
+    "name": null,
+    "address": null
+   },
+   "marketer": {
+    "name": null,
+    "address": null
+   },
+   "netQuantity": {
+    "raw": "Net Quantity: 500 g",
+    "value": 500,
+    "unit": "g"
+   },
+   "mrp": {
+    "raw": "MRP ₹ 65.00 (inclusive of all taxes)",
+    "amount": 65,
+    "inclusiveOfAllTaxes": true
+   },
+   "dateOfManufacture": "08/2026",
+   "bestBefore": "9 months from date of packing",
+   "consumerCare": {
+    "name": "Sunrise Valley Foods Pvt. Ltd.",
+    "address": "Plot 14, MIDC Satpur, Nashik 422007",
+    "phone": "1800 123 4567",
+    "email": "care@sunrisevalley.example"
+   },
+   "countryOfOrigin": "India",
+   "isImported": false,
+   "category": "food",
+   "languages": [
+    "English"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.9
+   },
+   "rawText": "SUNRISE VALLEY\nClassic Thick Poha\nFlattened Rice (Poha)\nAbout this product\nSun-dried, thick-cut flattened rice from Nashik farms.\nPerfect for kanda poha, chivda and quick breakfasts. Store\nin a cool, dry place away from sunlight. Once opened,\ntransfer to an airtight container.\nNutrition Information (per 100 g)\nEnergy 346 kcal\nProtein 6.6 g\nCarbohydrate 77 g\nTotal Fat 1.2 g\nSodium 5 mg\nMandatory Declarations\nManufactured & Packed by: Sunrise Valley Foods Pvt. Ltd., Plot 14, MIDC Industrial Area,\nSatpur, Nashik 422007, Maharashtra, India\nNet Quantity: 500 g\nMRP ₹ 65.00 (inclusive of all taxes)\nDate of Manufacture / Packing: 08/2026\nBest Before: 9 months from date of packing\nConsumer Care: Sunrise Valley Foods Pvt. Ltd., Plot 14, MIDC Satpur, Nashik 422007 ·\nToll-free 1800 123 4567 · care@sunrisevalley.example\nCountry of Origin: India\nFSSAI Lic. No. 10012345678901 (fictional)\n8 901000000 00\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 1,
+   "mrpLineBox": [
+    48,
+    488,
+    460,
+    512
+   ],
+   "bodyTextLineBox": [
+    48,
+    178,
+    620,
+    202
+   ],
+   "textSizeNote": "Declaration line height ≈ 100% of body-text line height (from image bounding boxes)."
+  },
+  "02-missing-mrp.png": {
+   "brandName": "NILGIRI BREEZE",
+   "productName": "Premium CTC Leaf Tea",
+   "commodityName": "Black Tea (CTC)",
+   "manufacturer": {
+    "name": "Nilgiri Breeze Tea Co.",
+    "address": "Estade Road, Coonoor 643101, The Nilgiris, Tamil Nadu, India"
+   },
+   "packer": {
+    "name": "Nilgiri Breeze Tea Co.",
+    "address": "Coonoor 643101"
+   },
+   "importer": {
+    "name": null,
+    "address": null
+   },
+   "marketer": {
+    "name": null,
+    "address": null
+   },
+   "netQuantity": {
+    "raw": "Net Quantity: 250 g",
+    "value": 250,
+    "unit": "g"
+   },
+   "mrp": {
+    "raw": null,
+    "amount": null,
+    "inclusiveOfAllTaxes": null
+   },
+   "dateOfManufacture": "07/2026",
+   "bestBefore": "12 months from date of packing",
+   "consumerCare": {
+    "name": "Nilgiri Breeze Tea Co.",
+    "address": "Estade Road, Coonoor 643101",
+    "phone": "0423 2200 100",
+    "email": "hello@nilgiribreeze.example"
+   },
+   "countryOfOrigin": "India",
+   "isImported": false,
+   "category": "food",
+   "languages": [
+    "English"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.9
+   },
+   "rawText": "NILGIRI BREEZE\nPremium CTC Leaf Tea\nBlack Tea (CTC)\nAbout this product\nHand-picked from high-altitude estates and CTC-processed\nfor a strong, brisk cup. Brew 1 teaspoon per cup in\nfreshly boiled water for 3 minutes. Store in an airtight\ncontainer.\nNutrition Information (per 100 g)\nEnergy 0 kcal\nProtein 0 g\nCarbohydrate 0 g\nTotal Fat 0 g\nMandatory Declarations\nManufactured by: Nilgiri Breeze Tea Co., Estade Road, Coonoor 643101, The Nilgiris, Tamil Nadu, India\nPacked by: Nilgiri Breeze Tea Co., Coonoor 643101\nNet Quantity: 250 g\nDate of Packing: 07/2026\nBest Before: 12 months from date of packing\nConsumer Care: Nilgiri Breeze Tea Co., Estade Road, Coonoor 643101 · Phone 0423 2200 100 · hello@nilgiribreeze.example\nCountry of Origin: India\n8 901004321 07\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 0.98,
+   "mrpLineBox": [
+    48,
+    545,
+    280,
+    565
+   ],
+   "bodyTextLineBox": [
+    48,
+    185,
+    540,
+    205
+   ],
+   "textSizeNote": "Declaration line height ≈ 100% of body-text line height (from image bounding boxes)."
+  },
+  "03-mrp-no-taxes.png": {
+   "brandName": "DAKSHIN MASALA CO.",
+   "productName": "Udupi Sambar Powder",
+   "commodityName": "Spice Mix (Sambar Powder)",
+   "manufacturer": {
+    "name": "Dakshin Masala Company",
+    "address": "No. 7, Industrial Estate, Manipal, Udupi 576104, Karnataka, India"
+   },
+   "packer": {
+    "name": "Dakshin Masala Company",
+    "address": "No. 7, Industrial Estate, Manipal, Udupi 576104, Karnataka, India"
+   },
+   "importer": {
+    "name": null,
+    "address": null
+   },
+   "marketer": {
+    "name": null,
+    "address": null
+   },
+   "netQuantity": {
+    "raw": "Net Quantity: 100 g",
+    "value": 100,
+    "unit": "g"
+   },
+   "mrp": {
+    "raw": "MRP ₹ 48.00",
+    "amount": 48,
+    "inclusiveOfAllTaxes": null
+   },
+   "dateOfManufacture": "09/2026",
+   "bestBefore": "6 months from manufacture",
+   "consumerCare": {
+    "name": "Dakshin Masala Company",
+    "address": "Manipal, Udupi 576104",
+    "phone": "1800 200 7788",
+    "email": "care@dakshinmasala.example"
+   },
+   "countryOfOrigin": "India",
+   "isImported": false,
+   "category": "food",
+   "languages": [
+    "English"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.9
+   },
+   "rawText": "DAKSHIN MASALA CO.\nUdupi Sambar Powder\nSpice Mix (Sambar Powder)\n\nAbout this product\nA traditional Udupi blend of coriander, red chilli,\nfenugreek, toor dal and curry leaves, slow-roasted and\nground in small batches. No added colour or preservatives.\n\nNutrition Information (per 100 g)\nEnergy 312 kcal\nProtein 12 g\nCarbohydrate 48 g\nTotal Fat 9 g\n\nMandatory Declarations\nManufactured & Packed by: Dakshin Masala Company, No. 7, Industrial Estate, Manipal, Udupi\n576104, Karnataka, India\nNet Quantity: 100 g\nMRP ₹ 48.00\nMfg. Date: 09/2026\nBest Before: 6 months from manufacture\nConsumer Care: Dakshin Masala Company, Manipal, Udupi 576104 · 1800 200 7788 ·\ncare@dakshinmasala.example\nCountry of Origin: India\n\n8 901008642 14\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 1,
+   "mrpLineBox": [
+    58,
+    498,
+    200,
+    518
+   ],
+   "bodyTextLineBox": [
+    58,
+    198,
+    620,
+    218
+   ],
+   "textSizeNote": "Declaration line height ≈ 100% of body-text line height (from image bounding boxes)."
+  },
+  "04-missing-care.png": {
+   "brandName": "HIMA HONEY",
+   "productName": "Multiflora Forest Honey",
+   "commodityName": "Honey",
+   "manufacturer": {
+    "name": "Hima Honey Farms LLP",
+    "address": "Village Rampur, Tehsil Kullu, Kullu 175101, Himachal Pradesh, India"
+   },
+   "packer": {
+    "name": "Hima Honey Farms LLP",
+    "address": "Village Rampur, Tehsil Kullu, Kullu 175101, Himachal Pradesh, India"
+   },
+   "importer": {
+    "name": null,
+    "address": null
+   },
+   "marketer": {
+    "name": null,
+    "address": null
+   },
+   "netQuantity": {
+    "raw": "Net Quantity: 500 g",
+    "value": 500,
+    "unit": "g"
+   },
+   "mrp": {
+    "raw": "MRP ₹ 349.00 (inclusive of all taxes)",
+    "amount": 349,
+    "inclusiveOfAllTaxes": true
+   },
+   "dateOfManufacture": "06/2026",
+   "bestBefore": "24 months from packing",
+   "consumerCare": {
+    "name": null,
+    "address": null,
+    "phone": null,
+    "email": null
+   },
+   "countryOfOrigin": "India",
+   "isImported": false,
+   "category": "food",
+   "languages": [
+    "English"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.9
+   },
+   "rawText": "HIMA HONEY\nMultiflora Forest Honey\nHoney\n\nAbout this product\nRaw, unheated multiflora honey collected from Himalayan\nfoothill apiaries. Natural crystallisation may occur;\nplace the jar in warm water to restore. Not for infants\nunder 12 months.\n\nNutrition Information (per 100 g)\nEnergy 320 kcal\nCarbohydrate 80 g\nSugars 79 g\nProtein 0.3 g\n\nMandatory Declarations\nManufactured & Packed by: Hima Honey Farms LLP, Village Rampur, Tehsil Kullu, Kullu 175101,\nHimachal Pradesh, India\nNet Quantity: 500 g\nMRP ₹ 349.00 (inclusive of all taxes)\nDate of Packing: 06/2026\nBest Before: 24 months from packing\nCountry of Origin: India\n\n8 901012963 21\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 1,
+   "mrpLineBox": [
+    50,
+    515,
+    450,
+    535
+   ],
+   "bodyTextLineBox": [
+    50,
+    185,
+    450,
+    205
+   ],
+   "textSizeNote": "Declaration line height ≈ 100% of body-text line height (from image bounding boxes)."
+  },
+  "05-nonstandard-units.png": {
+   "brandName": "MEGHA BAKES",
+   "productName": "Danish Butter Cookies",
+   "commodityName": "Butter Cookies",
+   "manufacturer": {
+    "name": "Megha Bakes Pvt. Ltd.",
+    "address": "Plot 3, EPIP Industrial Area, Byrnihat 793101, Meghalaya, India"
+   },
+   "packer": {
+    "name": "Megha Bakes Pvt. Ltd.",
+    "address": "Plot 3, EPIP Industrial Area, Byrnihat 793101, Meghalaya, India"
+   },
+   "importer": {
+    "name": null,
+    "address": null
+   },
+   "marketer": {
+    "name": null,
+    "address": null
+   },
+   "netQuantity": {
+    "raw": "Net Wt: 7 oz",
+    "value": 7,
+    "unit": "oz"
+   },
+   "mrp": {
+    "raw": "MRP ₹ 199.00 (inclusive of all taxes)",
+    "amount": 199,
+    "inclusiveOfAllTaxes": true
+   },
+   "dateOfManufacture": "08/2026",
+   "bestBefore": "9 months from manufacture",
+   "consumerCare": {
+    "name": "Megha Bakes Pvt. Ltd.",
+    "address": "Byrnihat 793101",
+    "phone": "1800 345 6789",
+    "email": "care@meghabakes.example"
+   },
+   "countryOfOrigin": "India",
+   "isImported": false,
+   "category": "food",
+   "languages": [
+    "English"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.9
+   },
+   "rawText": "MEGHA BAKES\nDanish Butter Cookies\nButter Cookies\nAbout this product\nCrisp, buttery cookies baked in Shillong with real butter\nand vanilla. Contains wheat, milk and egg. May contain\ntraces of nuts. Store in a cool, dry place.\nNutrition Information (per 100 g)\nEnergy 480 kcal\nProtein 6 g\nCarbohydrate 62 g\nTotal Fat 24 g\nMandatory Declarations\nManufactured & Packed by: Megha Bakes Pvt. Ltd., Plot 3, EPIP Industrial Area, Byrnihat\n793101, Meghalaya, India\nNet Wt: 7 oz\nMRP ₹ 199.00 (inclusive of all taxes)\nMfg. Date: 08/2026\nBest Before: 9 months from manufacture\nConsumer Care: Megha Bakes Pvt. Ltd., Byrnihat 793101 · 1800 345 6789 ·\ncare@meghabakes.example\nCountry of Origin: India\n8 901017284 28\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 1,
+   "mrpLineBox": [
+    48,
+    548,
+    420,
+    570
+   ],
+   "bodyTextLineBox": [
+    48,
+    192,
+    540,
+    210
+   ],
+   "textSizeNote": "Declaration line height ≈ 122% of body-text line height (from image bounding boxes)."
+  },
+  "06-missing-address.png": {
+   "brandName": "PURE HARVEST",
+   "productName": "Roasted Salted Peanuts",
+   "commodityName": "Roasted Peanuts",
+   "manufacturer": {
+    "name": "Pure Harvest Agro Foods",
+    "address": null
+   },
+   "packer": {
+    "name": "Pure Harvest Agro Foods",
+    "address": null
+   },
+   "importer": {
+    "name": null,
+    "address": null
+   },
+   "marketer": {
+    "name": null,
+    "address": null
+   },
+   "netQuantity": {
+    "raw": "Net Quantity: 200 g",
+    "value": 200,
+    "unit": "g"
+   },
+   "mrp": {
+    "raw": "MRP ₹ 85.00 (inclusive of all taxes)",
+    "amount": 85,
+    "inclusiveOfAllTaxes": true
+   },
+   "dateOfManufacture": "Date of Packing: 09/2026",
+   "bestBefore": "Best Before: 6 months from packing",
+   "consumerCare": {
+    "name": null,
+    "address": null,
+    "phone": "1800 111 2222",
+    "email": "care@pureharvest.example"
+   },
+   "countryOfOrigin": "India",
+   "isImported": false,
+   "category": "food",
+   "languages": [
+    "English"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.9
+   },
+   "rawText": "PURE HARVEST\nRoasted Salted Peanuts\nRoasted Peanuts\nAbout this product\nPremium Junagadh peanuts, dry-roasted and lightly salted.\nA good source of protein for your evening snack. Contains peanuts. Store in an airtight container.\nNutrition Information (per 100 g)\nEnergy 585 kcal\nProtein 25 g\nCarbohydrate 21 g\nTotal Fat 49 g\nSodium 410 mg\nMandatory Declarations\nManufactured & Packed by: Pure Harvest Agro Foods\nNet Quantity: 200 g\nMRP ₹ 85.00 (inclusive of all taxes)\nDate of Packing: 09/2026\nBest Before: 6 months from packing\nConsumer Care: 1800 111 2222 · care@pureharvest.example\nCountry of Origin: India\n8 901021605 35\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 0.98,
+   "mrpLineBox": [
+    45,
+    455,
+    450,
+    475
+   ],
+   "bodyTextLineBox": [
+    45,
+    185,
+    620,
+    205
+   ],
+   "textSizeNote": "Declaration line height ≈ 100% of body-text line height (from image bounding boxes)."
+  },
+  "07-missing-date.png": {
+   "brandName": "RAJDHANI GRAINS",
+   "productName": "Aged Basmati Rice",
+   "commodityName": "Basmati Rice",
+   "manufacturer": {
+    "name": "Rajdhani Grains Pvt. Ltd.",
+    "address": "Rice Mill Road, Taraori, Karnal 132116, Haryana, India"
+   },
+   "packer": {
+    "name": "Rajdhani Grains Pvt. Ltd.",
+    "address": "Rice Mill Road, Taraori, Karnal 132116, Haryana, India"
+   },
+   "importer": {
+    "name": null,
+    "address": null
+   },
+   "marketer": {
+    "name": null,
+    "address": null
+   },
+   "netQuantity": {
+    "raw": "Net Quantity: 1 kg",
+    "value": 1,
+    "unit": "kg"
+   },
+   "mrp": {
+    "raw": "MRP ₹ 160.00 (inclusive of all taxes)",
+    "amount": 160,
+    "inclusiveOfAllTaxes": true
+   },
+   "dateOfManufacture": null,
+   "bestBefore": null,
+   "consumerCare": {
+    "name": "Rajdhani Grains Pvt. Ltd.",
+    "address": "Taraori, Karnal 132116",
+    "phone": "1800 500 1234",
+    "email": "care@rajdhani grains.example"
+   },
+   "countryOfOrigin": "India",
+   "isImported": false,
+   "category": "food",
+   "languages": [
+    "English"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.9
+   },
+   "rawText": "RAJDHANI GRAINS\nAged Basmati Rice\nBasmati Rice\nAbout this product\nExtra-long grain basmati aged for 18 months for aroma and length. Rinse twice and soak for 30 minutes before cooking. Store in a cool, dry place.\nNutrition Information (per 100 g)\nEnergy 350 kcal\nProtein 7.5 g\nCarbohydrate 78 g\nTotal Fat 0.6 g\nMandatory Declarations\nManufactured & Packed by: Rajdhani Grains Pvt. Ltd., Rice Mill Road, Taraori, Karnal 132116, Haryana, India\nNet Quantity: 1 kg\nMRP ₹ 160.00 (inclusive of all taxes)\nConsumer Care: Rajdhani Grains Pvt. Ltd., Taraori, Karnal 132116 · 1800 500 1234 · care@rajdhani grains.example\nCountry of Origin: India\n8 901025926 42\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 0.98,
+   "mrpLineBox": [
+    40,
+    468,
+    360,
+    488
+   ],
+   "bodyTextLineBox": [
+    40,
+    178,
+    480,
+    198
+   ],
+   "textSizeNote": "Declaration line height ≈ 100% of body-text line height (from image bounding boxes)."
+  },
+  "08-import-no-origin.png": {
+   "brandName": "COSTA VERDE",
+   "productName": "Extra Virgin Olive Oil",
+   "commodityName": "Extra Virgin Olive Oil",
+   "manufacturer": {
+    "name": null,
+    "address": null
+   },
+   "packer": {
+    "name": null,
+    "address": null
+   },
+   "importer": {
+    "name": "Bluefin Trading LLP",
+    "address": "22 Marine Lines, Fort, Mumbai 400020, Maharashtra, India"
+   },
+   "marketer": {
+    "name": "Bluefin Trading LLP",
+    "address": "22 Marine Lines, Fort, Mumbai 400020, Maharashtra, India"
+   },
+   "netQuantity": {
+    "raw": "Net Quantity: 500 ml",
+    "value": 500,
+    "unit": "ml"
+   },
+   "mrp": {
+    "raw": "MRP ₹ 899.00 (inclusive of all taxes)",
+    "amount": 899,
+    "inclusiveOfAllTaxes": true
+   },
+   "dateOfManufacture": "07/2026",
+   "bestBefore": "18 months from date of packing",
+   "consumerCare": {
+    "name": "Bluefin Trading LLP",
+    "address": "22 Marine Lines, Mumbai 400020",
+    "phone": "+91 22 4000 1234",
+    "email": "support@bluefintrading.example"
+   },
+   "countryOfOrigin": null,
+   "isImported": true,
+   "category": "food",
+   "languages": [
+    "English"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.9
+   },
+   "rawText": "COSTA VERDE\nExtra Virgin Olive Oil\nExtra Virgin Olive Oil\nAbout this product\nCold-extracted from first-harvest olives. Fruity with a\npeppery finish. Ideal for salads, dips and finishing.\nStore away from heat and light.\nNutrition Information (per 100 g)\nEnergy 884 kcal\nTotal Fat 100 g\nSaturated Fat 14 g\nProtein 0 g\nMandatory Declarations\nImported & Marketed by: Bluefin Trading LLP, 22 Marine Lines, Fort, Mumbai 400020,\nMaharashtra, India\nNet Quantity: 500 ml\nMRP ₹ 899.00 (inclusive of all taxes)\nDate of Import: 07/2026\nBest Before: 18 months from date of packing\nConsumer Care: Bluefin Trading LLP, 22 Marine Lines, Mumbai 400020 · +91 22 4000 1234 ·\nsupport@bluefintrading.example\n8 901030247 49\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 0.98,
+   "mrpLineBox": [
+    48,
+    488,
+    360,
+    508
+   ],
+   "bodyTextLineBox": [
+    48,
+    188,
+    420,
+    208
+   ],
+   "textSizeNote": "Declaration line height ≈ 100% of body-text line height (from image bounding boxes)."
+  },
+  "09-tiny-text.png": {
+   "brandName": "DEVI DAILY",
+   "productName": "Unpolished Toor Dal",
+   "commodityName": "Toor Dal (Split Pigeon Pea)",
+   "manufacturer": {
+    "name": "Devi Daily Foods Pvt. Ltd.",
+    "address": "Plot 21, Additional MIDC, Latur 413531, Maharashtra, India"
+   },
+   "packer": {
+    "name": "Devi Daily Foods Pvt. Ltd.",
+    "address": "Plot 21, Additional MIDC, Latur 413531, Maharashtra, India"
+   },
+   "importer": {
+    "name": null,
+    "address": null
+   },
+   "marketer": {
+    "name": null,
+    "address": null
+   },
+   "netQuantity": {
+    "raw": "Net Quantity: 1 kg",
+    "value": 1,
+    "unit": "kg"
+   },
+   "mrp": {
+    "raw": "MRP ₹ 145.00 (inclusive of all taxes)",
+    "amount": 145,
+    "inclusiveOfAllTaxes": true
+   },
+   "dateOfManufacture": "08/2026",
+   "bestBefore": "9 months from packing",
+   "consumerCare": {
+    "name": "Devi Daily Foods Pvt. Ltd.",
+    "address": "Latur 413531",
+    "phone": "1800 777 8899",
+    "email": "care@devidaily.example"
+   },
+   "countryOfOrigin": "India",
+   "isImported": false,
+   "category": "food",
+   "languages": [
+    "English"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.5
+   },
+   "rawText": "DEVI DAILY\nUnpolished Toor Dal\nToor Dal (Split Pigeon Pea)\n\nAbout this product\nUnpolished, chemical-free toor dal from Latur. Soak for 20\nminutes for faster cooking. Store in a cool, dry place in\nan airtight container.\n\nNutrition Information (per 100 g)\nEnergy 335 kcal\nProtein 22 g\nCarbohydrate 57 g\nTotal Fat 1.5 g\n\nMandatory Declarations\nManufactured & Packed by: Devi Daily Foods Pvt. Ltd., Plot 21, Additional MIDC, Latur 413531, Maharashtra, India\nNet Quantity: 1 kg\nMRP ₹ 145.00 (inclusive of all taxes)\nDate of Packing: 08/2026\nBest Before: 9 months from packing\nConsumer Care: Devi Daily Foods Pvt. Ltd., Latur 413531 · 1800 777 8899 · care@devidaily.example\nCountry of Origin: India\n\n8 901034568 56\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 1,
+   "mrpLineBox": [
+    50,
+    445,
+    350,
+    460
+   ],
+   "bodyTextLineBox": [
+    50,
+    180,
+    550,
+    200
+   ],
+   "textSizeNote": "Declaration line height ≈ 75% of body-text line height (from image bounding boxes)."
+  },
+  "10-compliant-hi.png": {
+   "brandName": "अन्नपूर्णा",
+   "productName": "चना दाल",
+   "commodityName": "चना दाल (स्प्रूट चिकपी)",
+   "manufacturer": {
+    "name": "अन्नपूर्णा फूड्स प्राइवेट लिमिटेड",
+    "address": "प्लॉट 7, औद्योगिक क्षेत्र पोलोनागड, इंडौर 452015, मध्य प्रदेश, भारत"
+   },
+   "packer": {
+    "name": "अन्नपूर्णा फूड्स प्राइवेट लिमिटेड",
+    "address": "प्लॉट 7, औद्योगिक क्षेत्र पोलोनागड, इंडौर 452015, मध्य प्रदेश, भारत"
+   },
+   "importer": {
+    "name": null,
+    "address": null
+   },
+   "marketer": {
+    "name": null,
+    "address": null
+   },
+   "netQuantity": {
+    "raw": "शुद्ध मात्रा: 1 kg",
+    "value": 1,
+    "unit": "kg"
+   },
+   "mrp": {
+    "raw": "अधिकतम खुदरा मूल्य ₹ 120.00 (सभी करों सहित)",
+    "amount": 120,
+    "inclusiveOfAllTaxes": true
+   },
+   "dateOfManufacture": "08/2026",
+   "bestBefore": "पैकिंग से 9 माह",
+   "consumerCare": {
+    "name": "अन्नपूर्णा फूड्स प्रा. लि.",
+    "address": "इंदौर 452015",
+    "phone": "1800 222 3344",
+    "email": "seva@annapurnafoods.example"
+   },
+   "countryOfOrigin": "भारत",
+   "isImported": false,
+   "category": "food",
+   "languages": [
+    "Hindi"
+   ],
+   "textSize": {
+    "flag": "normal",
+    "confidence": 0.9
+   },
+   "rawText": "अन्नपूर्णा\nचना दाल\nचना दाल (स्प्रूट चिकपी)\n\nउत्पाद के बारे में\nमध्य प्रदेश के खेतों से चुनी गई उत्तम गुणवत्ता की चना दाल।\nपकाने से पहले 30 मिनट भिगोएँ। ठंडी और सूखी जगह पर रखें।\nखोलने के बाद वायुरोधी डिब्बे में रखें।\n\nपोषण जानकारी (प्रति 100 g)\nऊर्जा 360 kcal\nप्रोटीन 20 g\nकार्बोहाइड्रेट 60 g\nकुल वसा 5 g\n\nअनिवार्य घोषणाएँ\nनिर्माता एवं पैकर: अन्नपूर्णा फूड्स प्राइवेट लिमिटेड, प्लॉट 7, औद्योगिक क्षेत्र पोलोनागड,\nइंदौर 452015, मध्य प्रदेश, भारत\nशुद्ध मात्रा: 1 kg\nअधिकतम खुदरा मूल्य ₹ 120.00 (सभी करों सहित)\nनिर्माण / पैकिंग का माह व वर्ष: 08/2026\nउपयोग की अंतिम तिथि: पैकिंग से 9 माह\nउपभोक्ता सेवा: अन्नपूर्णा फूड्स प्रा. लि., इंदौर 452015 - टोल-फ्री 1800 222 3344 ·\nseva@annapurnafoods.example\nमूल देश: भारत\n\n8 901038889 63\nSynthetic test label · fictional brand · Jaanch",
+   "confidence": 0.98,
+   "mrpLineBox": [
+    48,
+    535,
+    950,
+    565
+   ],
+   "bodyTextLineBox": [
+    48,
+    185,
+    950,
+    215
+   ],
+   "textSizeNote": "Declaration line height ≈ 100% of body-text line height (from image bounding boxes)."
+  }
+ }
+}

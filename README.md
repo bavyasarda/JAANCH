@@ -85,6 +85,17 @@ calling). Tools read and write a shared run context so the planner never has to 
 which keeps token use inside Groq's free-tier limits. If the planner model is unavailable, a scripted
 fallback runs the same tools in order and the timeline says so.
 
+## What makes it demo-proof and judge-friendly
+
+- **Agent steps timeline** streams every tool call with the planner's own one-line reason, output summary and timing.
+- **`/rules` transparency page**: all 12 rules with clause, source PDF link and `verified` badge — the LLM never decides compliance.
+- **11 unit tests** pin the rule engine, comparison and fix-list behaviour (`npm test`).
+- **Vernacular UI**: form, verdict and action labels switch to Hindi, Marathi, Tamil, Bengali or Telugu with the language selector (deterministic strings, no LLM).
+- **WhatsApp share** for the grievance, **Listen** for spoken verdicts, **Save as PDF** reports with correct Indic rendering.
+- **Installable PWA** (manifest + icons) so the demo runs from a phone's home screen with the camera.
+- **Resilience**: client-side image compression, streaming progress, friendly rate-limit / quota messages, scripted fallback if the planner model is down, optional fallback provider, and cached real extractions for the bundled samples when the live vision model is unavailable (clearly badged "cached" in the timeline).
+- See [DEMO.md](DEMO.md) for a 3-minute demo script and Q&A notes.
+
 ## Tech stack
 
 - **Next.js 16** (App Router, TypeScript) + **Tailwind CSS v4** + **shadcn/ui** — one project, API routes as backend, deployed on **Vercel**
@@ -121,6 +132,7 @@ npm run dev                  # http://localhost:3000
 ```bash
 npm run labels   # regenerate the 10 synthetic test labels (SVG -> PNG via sharp)
 npm run verify   # run extractLabel + checkRules over all 10 labels and print a results table
+npm test         # rule-engine unit tests (node:test)
 npm run build    # production build
 npm run lint
 ```

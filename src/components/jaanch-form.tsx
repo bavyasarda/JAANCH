@@ -14,10 +14,11 @@ import { LANGUAGES, ROLES, SAMPLE_LABELS, type LanguageCode, type Role } from "@
 import { compressImage, urlToFile } from "@/lib/image";
 import { useJaanchRun } from "@/hooks/use-jaanch-run";
 import { useSpeechInput } from "@/hooks/use-speech-input";
+import { bi, t } from "@/lib/i18n";
 import { AgentSteps } from "@/components/agent-steps";
 import { ResultsView } from "@/components/results-view";
 
-interface Img { base64: string; mediaType: string; dataUrl: string; name: string }
+interface Img { base64: string; mediaType: string; dataUrl: string; name: string; sampleFile?: string }
 
 export function JaanchForm() {
   const [role, setRole] = useState<Role>("consumer");
@@ -34,18 +35,18 @@ export function JaanchForm() {
   const { result, run, reset } = useJaanchRun();
   const speech = useSpeechInput(language, (t) => setQuestion(t));
 
-  async function loadFile(file: File) {
+  async function loadFile(file: File, sampleFile?: string) {
     setImgBusy(true);
     try {
       const c = await compressImage(file);
-      setImg({ base64: c.base64, mediaType: c.mediaType, dataUrl: c.dataUrl, name: file.name });
+      setImg({ base64: c.base64, mediaType: c.mediaType, dataUrl: c.dataUrl, name: file.name, sampleFile });
     } finally {
       setImgBusy(false);
     }
   }
   async function loadSample(file: string) {
     setShowSamples(false);
-    await loadFile(await urlToFile(`/test-labels/${file}`, file));
+    await loadFile(await urlToFile(`/test-labels/${file}`, file), file);
   }
 
   const canRun = !!img || url.trim().length > 0 || pasted.trim().length > 0;
@@ -54,7 +55,7 @@ export function JaanchForm() {
   async function submit() {
     if (!canRun || running) return;
     setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-    await run({ imageBase64: img?.base64, mediaType: img?.mediaType, url: url.trim() || undefined, listingText: pasted.trim() || undefined, role, language, question: question.trim() || undefined });
+    await run({ imageBase64: img?.base64, mediaType: img?.mediaType, url: url.trim() || undefined, listingText: pasted.trim() || undefined, role, language, question: question.trim() || undefined, sampleFile: img?.sampleFile });
   }
 
   const doneSteps = result.steps.filter((s) => s.status === "done").length;
@@ -66,7 +67,7 @@ export function JaanchForm() {
         <CardContent className="flex flex-col gap-6 p-5 sm:p-7">
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
-              <Label>Label photo · लेबल की फ़ोटो</Label>
+              <Label>{bi(language, "labelPhoto")}</Label>
               <button type="button" onClick={() => setShowSamples((s) => !s)} className="flex items-center gap-1 text-xs text-primary hover:underline">
                 <Images className="size-3.5" /> Try a sample
               </button>
@@ -89,27 +90,27 @@ export function JaanchForm() {
             ) : (
               <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-8 text-center text-sm text-muted-foreground hover:border-primary hover:bg-accent/50">
                 <Camera className="size-7 text-primary" />
-                <span>{imgBusy ? "Compressing…" : "Tap to upload or take a photo of the back of the pack"}</span>
+                <span>{imgBusy ? "Compressing…" : t(language, "uploadHint")}</span>
                 <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => e.target.files?.[0] && loadFile(e.target.files[0])} />
               </label>
             )}
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="url">Product link (optional) · प्रोडक्ट लिंक</Label>
+            <Label htmlFor="url">{bi(language, "productLink")}</Label>
             <div className="relative">
               <Link2 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input id="url" className="pl-9" placeholder="https://www.example.in/product/..." value={url} onChange={(e) => setUrl(e.target.value)} inputMode="url" />
             </div>
             <button type="button" onClick={() => setShowPaste((v) => !v)} className="flex items-center gap-1 self-start text-xs text-primary underline-offset-2 hover:underline">
-              <ClipboardPaste className="size-3.5" /> Paste listing text instead
+              <ClipboardPaste className="size-3.5" /> {t(language, "pasteInstead")}
             </button>
             {showPaste && <Textarea placeholder="Paste the product title, MRP, net quantity, manufacturer, country of origin…" value={pasted} onChange={(e) => setPasted(e.target.value)} rows={4} />}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
-              <Label>I am a · मैं हूँ</Label>
+              <Label>{bi(language, "iAm")}</Label>
               <Select value={role} onValueChange={(v) => setRole(v as Role)}>
                 <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
                 <SelectContent>{ROLES.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}</SelectContent>
@@ -117,7 +118,7 @@ export function JaanchForm() {
               <p className="text-xs text-muted-foreground">{ROLES.find((r) => r.value === role)?.hint}</p>
             </div>
             <div className="grid gap-2">
-              <Label>Language · भाषा</Label>
+              <Label>{bi(language, "language")}</Label>
               <Select value={language} onValueChange={(v) => setLanguage(v as LanguageCode)}>
                 <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
                 <SelectContent>{LANGUAGES.map((l) => <SelectItem key={l.value} value={l.value}>{l.label} · {l.english}</SelectItem>)}</SelectContent>
@@ -126,17 +127,17 @@ export function JaanchForm() {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="q">Ask a question (optional) · सवाल पूछें</Label>
+            <Label htmlFor="q">{bi(language, "askQuestion")}</Label>
             <div className="relative">
               <MessageCircleQuestion className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input id="q" className="pl-9" placeholder={speech.listening ? "Listening… bolo" : "e.g. Kya is packet par MRP sahi likha hai?"} value={question} onChange={(e) => setQuestion(e.target.value)} />
+              <Input id="q" className="pl-9" placeholder={speech.listening ? "Listening…" : t(language, "questionPlaceholder")} value={question} onChange={(e) => setQuestion(e.target.value)} />
             </div>
             {speech.error && <p className="text-xs text-destructive">{speech.error}</p>}
           </div>
 
           <div className="flex gap-2">
             <Button size="lg" className="h-12 flex-1 text-base font-semibold" disabled={!canRun || running || imgBusy} onClick={submit}>
-              <Search className="size-5" /> {running ? "Jaanch ho rahi hai…" : "Jaanch karo"}
+              <Search className="size-5" /> {running ? t(language, "checking") : t(language, "check")}
             </Button>
             <Button size="lg" variant={speech.listening ? "destructive" : "outline"} className="h-12" aria-label={speech.listening ? "Stop listening" : "Ask by voice"} disabled={speech.supported === false} title={speech.supported === false ? "Voice input is not supported in this browser (try Chrome)" : `Speak in ${LANGUAGES.find((l) => l.value === language)?.english ?? "your language"}`} onClick={() => (speech.listening ? speech.stop() : speech.start())}>
               {speech.listening ? <MicOff className="size-5 animate-pulse" /> : <Mic className="size-5" />}
@@ -149,7 +150,7 @@ export function JaanchForm() {
         {running && (
           <div className="flex flex-col gap-2">
             <Progress value={progress} />
-            <p className="text-center text-xs text-muted-foreground">Reading the label, running the rule engine, explaining in your language… this takes 15–60 seconds on the free model tier.</p>
+            <p className="text-center text-xs text-muted-foreground">{t(language, "progress")} (10–60 s)</p>
           </div>
         )}
         {result.status === "error" && (
@@ -171,10 +172,10 @@ export function JaanchForm() {
           </Alert>
         )}
         {result.status === "done" && <ResultsView state={result.state} language={language} summary={result.summary} role={role} imageDataUrl={img?.dataUrl} />}
-        <AgentSteps steps={result.steps} running={running} />
+        <AgentSteps steps={result.steps} running={running} title={language === "en-IN" ? "Agent steps" : `Agent steps · ${t(language, "agentSteps")}`} />
         {result.status === "done" && (
           <div className="flex justify-center">
-            <Button variant="ghost" size="sm" onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }}><RotateCcw className="size-4" /> Check another pack</Button>
+            <Button variant="ghost" size="sm" onClick={() => { reset(); window.scrollTo({ top: 0, behavior: "smooth" }); }}><RotateCcw className="size-4" /> {t(language, "tryAnother")}</Button>
           </div>
         )}
       </div>

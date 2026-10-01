@@ -6,14 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DISCLAIMER, LANGUAGES, type Role } from "@/lib/constants";
 import { ActionPanel } from "@/components/action-panel";
+import { t } from "@/lib/i18n";
 import type { RunState } from "@/lib/agent/context";
 import type { RuleResult, Severity } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const VERDICT = {
-  COMPLIANT: { label: "Compliant", hi: "अनुपालन ठीक है", Icon: CheckCircle2, cls: "border-green-600/40 bg-green-600/10 text-green-800 dark:text-green-300" },
-  VIOLATIONS: { label: "Violations found", hi: "उल्लंघन मिले", Icon: XCircle, cls: "border-red-600/40 bg-red-600/10 text-red-800 dark:text-red-300" },
-  NEEDS_REVIEW: { label: "Needs review", hi: "समीक्षा ज़रूरी", Icon: AlertTriangle, cls: "border-amber-600/40 bg-amber-500/10 text-amber-800 dark:text-amber-300" },
+  COMPLIANT: { label: "Compliant", key: "compliant", Icon: CheckCircle2, cls: "border-green-600/40 bg-green-600/10 text-green-800 dark:text-green-300" },
+  VIOLATIONS: { label: "Violations found", key: "violations", Icon: XCircle, cls: "border-red-600/40 bg-red-600/10 text-red-800 dark:text-red-300" },
+  NEEDS_REVIEW: { label: "Needs review", key: "needsReview", Icon: AlertTriangle, cls: "border-amber-600/40 bg-amber-500/10 text-amber-800 dark:text-amber-300" },
 } as const;
 
 const SEV: Record<Severity, string> = {
@@ -86,15 +87,20 @@ export function ResultsView({ state, language, summary, role, imageDataUrl }: { 
             <div className="flex items-center gap-3">
               <v.Icon className="size-9 shrink-0" />
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide opacity-80">Verdict · फ़ैसला</p>
-                <h2 className="text-2xl font-bold leading-tight">{v.label} <span className="font-semibold opacity-80">· {v.hi}</span></h2>
+                <p className="text-xs font-medium uppercase tracking-wide opacity-80">{language === "en-IN" ? "Verdict" : `Verdict · ${t(language, "verdict")}`}</p>
+                <h2 className="text-2xl font-bold leading-tight">{v.label}{language !== "en-IN" && <span className="font-semibold opacity-80"> · {t(language, v.key)}</span>}</h2>
               </div>
             </div>
             <Button size="sm" variant="outline" className="shrink-0 bg-background/70" onClick={() => (speaking ? stop() : speak(verdictText, language))}>
-              {speaking ? <Square className="size-4" /> : <Volume2 className="size-4" />} {speaking ? "Stop" : `Listen (${langLabel})`}
+              {speaking ? <Square className="size-4" /> : <Volume2 className="size-4" />} {speaking ? t(language, "stop") : `${t(language, "listen")} (${langLabel})`}
             </Button>
           </div>
-          {state.label?.productName && <p className="text-sm opacity-90">Product: <strong>{state.label.productName}</strong>{state.label.commodityName ? ` · ${state.label.commodityName}` : ""}</p>}
+          {state.label && state.label.confidence < 0.5 && state.rulesSource === "label" && (
+            <p className="rounded-md border border-amber-600/40 bg-amber-500/10 px-2 py-1 text-xs text-amber-900 dark:text-amber-200">
+              The photo was hard to read (confidence {Math.round(state.label.confidence * 100)}%). Missing items may just be unreadable — retake the photo in good light, flat and close, before acting on this.
+            </p>
+          )}
+          {state.label?.productName && <p className="text-sm opacity-90">{t(language, "product")}: <strong>{state.label.productName}</strong>{state.label.commodityName ? ` · ${state.label.commodityName}` : ""}</p>}
           <p className="text-base leading-relaxed">{verdictText}</p>
           {state.verdictText && state.verdictText.english !== state.verdictText.text && <p className="text-sm opacity-80">{state.verdictText.english}</p>}
           <div className="flex flex-wrap gap-2 text-xs">
@@ -109,7 +115,7 @@ export function ResultsView({ state, language, summary, role, imageDataUrl }: { 
 
       {state.compare && (
         <Card>
-          <CardHeader><CardTitle className="flex items-center gap-2 text-base"><GitCompare className="size-4 text-primary" /> Label vs online listing</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2 text-base"><GitCompare className="size-4 text-primary" /> {t(language, "listVsLabel")}</CardTitle></CardHeader>
           <CardContent>
             {state.compare.mismatches.length === 0 ? (
               <p className="text-sm text-muted-foreground">No mismatches on {state.compare.compared.length ? state.compare.compared.join(", ") : "the comparable fields"}.</p>
@@ -133,7 +139,7 @@ export function ResultsView({ state, language, summary, role, imageDataUrl }: { 
 
       {(bad.length > 0 || rev.length > 0) && (
         <Card>
-          <CardHeader><CardTitle className="text-base">Findings · निष्कर्ष</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">{language === "en-IN" ? "Findings" : `Findings · ${t(language, "findings")}`}</CardTitle></CardHeader>
           <CardContent>
             <ul className="divide-y">
               {bad.map((r) => <RuleRow key={r.ruleId} r={r} />)}
@@ -146,7 +152,7 @@ export function ResultsView({ state, language, summary, role, imageDataUrl }: { 
       <Card>
         <CardHeader>
           <button type="button" onClick={() => setShowPass((s) => !s)} className="flex w-full items-center justify-between text-left">
-            <CardTitle className="text-base">Passed checks ({pass.length})</CardTitle>
+            <CardTitle className="text-base">{t(language, "passedChecks")} ({pass.length})</CardTitle>
             <ChevronDown className={cn("size-4 transition-transform", showPass && "rotate-180")} />
           </button>
         </CardHeader>

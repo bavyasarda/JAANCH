@@ -6,6 +6,9 @@ import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: "Jaanch — Packet ki jaanch, aapki bhasha mein",
+  manifest: "/manifest.webmanifest",
+  icons: { icon: "/icon.svg", apple: "/icon-192.png" },
+  appleWebApp: { capable: true, title: "Jaanch", statusBarStyle: "default" },
   description:
     "Agentic AI that checks packaged-product labels against India's Legal Metrology (Packaged Commodities) Rules, 2011 and explains the result in your language.",
 };

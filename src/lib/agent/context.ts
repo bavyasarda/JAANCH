@@ -9,6 +9,8 @@ export interface RunInput {
   role: Role;
   language: LanguageCode;
   question?: string;
+  /** Set when the image came from the bundled "Try a sample" picker (file name). */
+  sampleFile?: string;
 }
 
 export interface VerdictText {

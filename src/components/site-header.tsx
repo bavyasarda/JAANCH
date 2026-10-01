@@ -16,6 +16,7 @@ export function SiteHeader() {
         </Link>
         <nav className="flex items-center gap-1 text-sm">
           <Link href="/" className="rounded-md px-3 py-1.5 hover:bg-accent">Home</Link>
+          <Link href="/rules" className="rounded-md px-3 py-1.5 hover:bg-accent">Rules</Link>
           <Link href="/about" className="rounded-md px-3 py-1.5 hover:bg-accent">About</Link>
           <ThemeToggle />
         </nav>

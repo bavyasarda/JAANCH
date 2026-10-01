@@ -13,6 +13,9 @@ import { languageName, ROLES } from "@/lib/constants";
 import type { CheckRulesOutput, Declarations } from "@/lib/types";
 import type { RunContext, RunInput, StreamEvent } from "./context";
 import { createContext } from "./context";
+import sampleCache from "@/data/sample-extractions.json";
+import { applyTextSizeEstimate } from "@/lib/tools/extract-label";
+import { DeclarationsSchema } from "@/lib/types";
 
 const reason = z.string().describe("One short sentence: why you are calling this tool now.");
 
@@ -49,6 +52,18 @@ function makeActions(ctx: RunContext) {
         out = await ctx.record("extractLabel", why, () => extractLabel({ imageBase64: ctx.input.imageBase64!, mediaType: ctx.input.mediaType ?? "image/jpeg" }), (o) => labelSummary(o.declarations));
       } catch (e) {
         const friendly = friendlyModelError(e);
+        // Demo resilience: bundled samples have real, previously captured extractions. Use them only when the live model fails, and say so.
+        const cached = ctx.input.sampleFile ? (sampleCache as { samples: Record<string, unknown> }).samples[ctx.input.sampleFile] : undefined;
+        if (cached) {
+          const parsed = DeclarationsSchema.safeParse(cached);
+          if (parsed.success) {
+            const decl = parsed.data;
+            applyTextSizeEstimate(decl);
+            await ctx.record("extractLabel (cached)", `Live vision model failed (${friendly.split(".")[0]}). This is a bundled sample, so Jaanch is reusing the extraction it captured from the same model earlier.`, async () => decl, (d) => `${labelSummary(d)} [cached]`);
+            ctx.patch({ label: decl, warnings: [...(ctx.state.warnings ?? []), "The live vision model was unavailable; a previously captured extraction of this sample label was used. Rule checks and explanations below ran live."] });
+            return { summary: labelSummary(decl), cached: true, productName: decl.productName, isImported: decl.isImported };
+          }
+        }
         ctx.patch({ extractError: friendly, warnings: [...(ctx.state.warnings ?? []), `Label photo could not be read: ${friendly}`] });
         return { error: friendly, hint: "Do not retry; continue with other inputs or finish." };
       }
