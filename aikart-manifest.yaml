@@ -1,0 +1,78 @@
+apiVersion: aikart.dev/v1
+kind: AgentManifest
+
+metadata:
+  name: jaanch
+  displayName: "Jaanch · जाँच — Legal Metrology label checker for Bharat"
+  description: "Upload a packaged-product label (or pick a bundled sample / paste a listing). An agent reads it with a vision model, runs a deterministic Legal Metrology (Packaged Commodities) Rules, 2011 engine, explains the verdict in Hindi/Tamil/Bengali/Marathi/Telugu/English, and drafts a consumer grievance, a seller fix-list or an inspector report. The LLM never decides compliance."
+  author: "Bavya Sarda"
+  repository: "https://github.com/bavyasarda/JAANCH"
+  category: "Citizen & GovTech"
+  tags: ["legal-metrology", "consumer-protection", "bharat-languages", "open-source"]
+
+runtime:
+  type: docker
+  image: "docker.io/bavyasarda/jaanch:1.0.0"
+  command: ["node", "--import", "tsx", "sandbox/run.ts"]
+
+resources:
+  cpu: 1
+  memoryMb: 1024
+  timeoutSeconds: 120
+
+inputs:
+  - name: sample
+    label: "Bundled sample label (pick one, or choose 'None' and give an image URL / listing text)"
+    type: select
+    required: false
+    options:
+      - "1: Fully compliant (English)"
+      - "2: Missing MRP"
+      - "3: MRP without 'inclusive of all taxes'"
+      - "4: Missing consumer care details"
+      - "5: Net quantity in non-standard units (7 oz)"
+      - "6: Missing manufacturer address"
+      - "7: Missing date of manufacture/packing"
+      - "8: Imported product without country of origin"
+      - "9: Very small declaration text"
+      - "10: Fully compliant Hindi (Devanagari) label"
+      - "None — use image_url / listing_text below"
+    default: "5: Net quantity in non-standard units (7 oz)"
+  - name: image_url
+    label: "Label photo URL (public JPEG/PNG, back of the pack)"
+    type: text
+    required: false
+    default: ""
+  - name: listing_text
+    label: "Online listing text to compare with the pack (optional)"
+    type: textarea
+    required: false
+    default: ""
+  - name: role
+    label: "I am a"
+    type: select
+    required: true
+    options: ["Consumer", "Seller (MSME)", "Inspector"]
+    default: "Consumer"
+  - name: language
+    label: "Language for the verdict and drafts"
+    type: select
+    required: true
+    options: ["Hindi", "English", "Tamil", "Bengali", "Marathi", "Telugu"]
+    default: "Hindi"
+  - name: question
+    label: "Ask a question about the pack (optional)"
+    type: text
+    required: false
+    default: ""
+
+output:
+  format: markdown
+
+security:
+  networkEgress: allowlist
+  # api.groq.com: open-weight models (Qwen 3.8 27B vision, gpt-oss) when GROQ_API_KEY is provided to the container.
+  # jaanch-delta.vercel.app: the hosted Jaanch API the public image delegates to when it carries no key.
+  egressAllowlist:
+    - "api.groq.com"
+    - "jaanch-delta.vercel.app"

@@ -152,6 +152,12 @@ npm run lint
 10 10-compliant-hi.png       COMPLIANT     -                              -              ✓
 ```
 
+## Hackathon submission (aiKart)
+
+- **Method 2 — hosted API:** `POST https://jaanch-delta.vercel.app/api/agent` (schema at `GET`). Request/response docs in [docs/API.md](docs/API.md).
+- **Method 1 — Docker + manifest:** [`Dockerfile`](Dockerfile), [`aikart-manifest.yaml`](aikart-manifest.yaml) (`aikart.dev/v1`), sandbox runner [`sandbox/run.ts`](sandbox/run.ts) implementing the `/aikart/input.json` → `/aikart/output.json` contract, example input in [`examples/aikart/`](examples/aikart/).
+- Step-by-step: [docs/SUBMISSION.md](docs/SUBMISSION.md). Demo script: [DEMO.md](DEMO.md).
+
 ## Deploy to Vercel
 
 ```bash

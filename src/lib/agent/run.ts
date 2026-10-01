@@ -98,7 +98,7 @@ function makeActions(ctx: RunContext) {
       const pre = pendingPrereq(ctx);
       const rules = ctx.state.rules;
       if (pre || !rules) return { error: pre ?? "Call checkRules first." };
-      const out = await ctx.record("draftGrievance", why, () => draftGrievance({ label: ctx.state.label, rules, compare: ctx.state.compare, listingUrl: ctx.input.url, language: ctx.input.language }), (o) => `Grievance drafted in ${languageName(o.language)} + English (${o.text.length} chars).`);
+      const out = await ctx.record("draftGrievance", why, () => draftGrievance({ label: ctx.state.label ?? ctx.state.listing, rules, compare: ctx.state.compare, listingUrl: ctx.input.url, language: ctx.input.language }), (o) => `Grievance drafted in ${languageName(o.language)} + English (${o.text.length} chars).`);
       ctx.patch({ grievance: out });
       return { done: true, subject: out.subject };
     },
@@ -106,7 +106,7 @@ function makeActions(ctx: RunContext) {
       const pre = pendingPrereq(ctx);
       const rules = ctx.state.rules;
       if (pre || !rules) return { error: pre ?? "Call checkRules first." };
-      const out = await ctx.record("makeFixList", why, () => makeFixList({ label: ctx.state.label, rules, language: ctx.input.language }), (o) => `${o.items.length} correction(s) listed for the seller.`);
+      const out = await ctx.record("makeFixList", why, () => makeFixList({ label: ctx.state.label ?? ctx.state.listing, rules, language: ctx.input.language }), (o) => `${o.items.length} correction(s) listed for the seller.`);
       ctx.patch({ fixList: out });
       return { done: true, corrections: out.items.length };
     },
